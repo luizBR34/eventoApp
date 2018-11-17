@@ -7,21 +7,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Convidado")
 public class Convidado implements Serializable {
 	
-	private static final long serialVersionUID = 108L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@NotEmpty
+	@NotBlank
 	@Column(name = "rg")
 	private String rg;
 	
-	@NotEmpty
+	@NotBlank
 	@Column(name = "nomeConvidado")
 	private String nomeConvidado;
 	
@@ -29,10 +28,7 @@ public class Convidado implements Serializable {
 	//Muitos Convidados para um Evento só
 	@ManyToOne
 	private Evento evento;
-	
-	
-	protected Convidado() {}
-	
+
 	
 	public String getRg() {
 		return rg;
@@ -47,12 +43,10 @@ public class Convidado implements Serializable {
 		this.nomeConvidado = nomeConvidado;
 	}
 	
-	
 	public Evento getEvento() {
 		return evento;
 	}
 	public void setEvento(Evento evento) {
 		this.evento = evento;
 	}
-
 }

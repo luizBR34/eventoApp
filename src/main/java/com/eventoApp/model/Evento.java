@@ -10,8 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Evento")
@@ -24,29 +23,27 @@ public class Evento implements Serializable {
 	@Column(name = "codigo")
 	private long codigo;
 	
-	@NotEmpty
+	@NotBlank
 	@Column(name = "nome")
 	private String nome;
 	
-	@NotEmpty
+	@NotBlank
 	@Column(name = "local")
 	private String local;
 	
-	@NotEmpty
+	@NotBlank
 	@Column(name = "data")
 	private String data;
 	
-	@NotEmpty
+	@NotBlank
 	@Column(name = "horario")
 	private String horario;
 	
 	//Um evento para muitos convidados
 	@OneToMany
 	private List<Convidado> convidados;
-	
-	protected Evento() {}
-	
-	
+
+
 	public long getCodigo() {
 		return codigo;
 	}

@@ -20,23 +20,23 @@
 <body>
 
 	<header>
-	  <nav>
+	  <nav class="menu">
 	    <div class="nav-wrapper">
-	      <a href="#" class="brand-logo">Evento</a>
+	      <a href="#" class="brand-logo" th:text="#{detalhe.Evento.Titulo}"></a>
 	      <ul id="nav-mobile" class="right hide-on-med-and-down">
-	        <li><a href="/eventos" class="waves-effect waves-light btn"><i class="material-icons left">add_circle_outline</i>Listar Eventos</a></li>
+	        <li><a href="/eventos" class="waves-effect waves-light btn" th:text="#{botao.Listar.Eventos}"><i class="material-icons left">add_circle_outline</i></a></li>
 	      </ul>
 	    </div>
 	  </nav>
 	</header>
 
 	<div th:each="ev : ${eventos}" class="container detalhesEvento"> <!-- "event" foi a mesma String especificada na linha mv.addObject("evento", evento);  do método detalhesEvento() -->
-	<h5>Detalhes do Evento</h5>
+	<h5 th:text="#{detalhe.Evento.Subtitulo}"></h5>
 		<div class ="row">
-			<p>Nome: <span th:text="${ev.nome}"></span></p>
-			<p>Local: <span th:text="${ev.local}"></span></p>
-			<p>Data:  <span th:text="${ev.data}"></span></p>
-			<p>Horario: <span th:text="${ev.horario}"></span></p>
+			<p><span th:text="#{coluna.Nome}"></span>: <span th:text="${ev.nome}"></span></p>
+			<p><span th:text="#{coluna.Local}"></span>: <span th:text="${ev.local}"></span></p>
+			<p><span th:text="#{coluna.Data}"></span>: <span th:text="${ev.data}"></span></p>
+			<p><span th:text="#{coluna.Horario}"></span>: <span th:text="${ev.horario}"></span></p>
 		</div>
 	</div>
 	
@@ -44,20 +44,20 @@
 
  		<div class="container formConvidado">
 			<form method="post">
-				RG: <input type="text" value="" name="rg"/>
-				Nome: <input type="text" value="" name="nomeConvidado"/>
-				<button class="waves-effect waves-light btn" type="submit">Adicionar</button>
+				<p th:text="#{coluna.RG}"/>
+				<input type="text" value="" name="rg"/>
+				<p th:text="#{coluna.Nome}"/>
+				<input type="text" value="" name="nomeConvidado"/>
+				<button class="waves-effect waves-light btn" th:text="#{botao.Cadastra.Convidado}" type="submit"></button>
 			</form>
 		</div>
 	
-	
-
-	<table class="container">
+	<table class="container tabelaConvidado">
 		<thead>
 			<tr>
-			<th>Nome Convidado</th>
-			<th>RG</th>
-			<th>Deletar</th>
+			<th th:text="#{coluna.Convidado.Cadastrado.Nome}"></th>
+			<th th:text="#{coluna.Convidado.Cadastrado.RG}"></th>
+			<th th:text="#{botao.Convidado.Deletar}"></th>
 			</tr>
 		</thead>
 		

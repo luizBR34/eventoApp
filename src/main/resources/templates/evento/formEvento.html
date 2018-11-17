@@ -16,11 +16,11 @@
 <body>
 
 	<header>
-	  <nav>
+	  <nav class="menu">
 	    <div class="nav-wrapper">
-	      <a href="#" class="brand-logo">Cadastro de Eventos</a>
+	      <a href="#" class="brand-logo" th:text="#{cadastro.Evento.Titulo}"></a>
 	      <ul id="nav-mobile" class="right hide-on-med-and-down">
-	        <li><a href="/eventos" class="waves-effect waves-light btn"><i class="material-icons left">format_list_bulleted</i>Listar Eventos</a></li>
+	        <li><a href="/eventos" class="waves-effect waves-light btn" th:text="#{botao.Listar.Eventos}"><i class="material-icons left">format_list_bulleted</i></a></li>
 	      </ul>
 	    </div>
 	  </nav>
@@ -30,22 +30,26 @@
 
 	<div class="container formEvento">
 		<form class="container" method="post">
-			Nome: <input type="text" value="" name="nome"/>
+			<p th:text="#{coluna.Nome}"/>
+			<input type="text" value="" name="nome"/>
 			
-			<div class="input-field col s6">
-				Local: <input type="text" value="" name="local"/>
+			<div class="row">
+				<div class="input-field col s6">
+					<p th:text="#{coluna.Local}"/>
+					<input type="text" value="" name="local"/>
+				</div>
+				
+				<div class="input-field col s3"> 
+					<p th:text="#{coluna.Data}"/>
+					<input type="date" value="" name="data"/> 
+				</div>
+		
+				<div class="input-field col s3"> 
+					<p th:text="#{coluna.Horario}"/>
+					<input type="time" value="" name="horario"/>
+				</div>
 			</div>
-			
-			<div class="input-field col s3"> 
-				Data: <input type="date" value="" name="data"/> 
-			</div>
-	
-			<div class="input-field col s3"> 
-				Horario: <input type="time" value="" name="horario"/>
-			</div>
-	
-			<button class="waves-effect waves-light btn" type="submit">Salvar</button>
-	
+			<button class="waves-effect waves-light btn" th:text="#{botao.Salvar}" type="submit"></button>
 		</form>
 	</div>
 

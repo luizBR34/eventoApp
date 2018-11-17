@@ -1,9 +1,12 @@
 package com.eventoApp.controller;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +53,8 @@ public class EventoController implements ErrorController {
 				return "redirect:cadastrarEvento";
 			}
 		
-		attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
 		rep.save(evento);
+		attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
 		return "redirect:cadastrarEvento";
 	}
 	
@@ -117,12 +120,38 @@ public class EventoController implements ErrorController {
 		return "redirect:/" + codigo; // chama o método detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
 	}
 	
+	
 
+	@RequestMapping("/login")
+	public String carregaPaginaLogin() {
+		return "login";
+	}
+	
+
+	
     @RequestMapping(value = PATH)
-    public String error() {
-        return "Ocorreu um erro no carregamento das paginas!";
+    public String manipulaError(HttpServletRequest request) {
+
+    	Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        
+        if (status != null) {
+            Integer statusCode = Integer.valueOf(status.toString());
+         
+            if(statusCode == HttpStatus.NOT_FOUND.value()) {
+                return "perdido";
+            }
+            else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                return "error";
+                
+            } else if(statusCode == HttpStatus.FORBIDDEN.value()) {
+            	return "proibido";
+            }
+        }
+
+        return "error";
     }
-    
+	
+
 
     @Override
     public String getErrorPath() {

@@ -19,25 +19,42 @@
 <body>
 
 	<header>
-	  <nav>
+	
+	  <nav class="menu">
 	    <div class="nav-wrapper">
-	      <a href="#" class="brand-logo">Sistema de Castramento de Eventos</a>
-	      <ul id="nav-mobile" class="right hide-on-med-and-down">
-	        <li><a href="/cadastrarEvento" class="waves-effect waves-light btn"><i class="material-icons left">add_circle_outline</i>Cadastrar Evento</a></li>
-	      </ul>
+	      	<a href="#" class="brand-logo" th:text="#{titulo}"></a>
+	      	<ul id="nav-mobile" class="right hide-on-med-and-down">
+	        	<li><a href="/cadastrarEvento" class="waves-effect waves-light btn" th:text="#{botao.CadastroEvento}"><i class="material-icons left">add_circle_outline</i></a></li>
+	      	</ul>
 	    </div>
 	  </nav>
+	  
+	  
+<table>
+	<tbody>
+	<tr><td style="width: 15%;"><span th:text="#{lang.mudarLingua}"></span>:</td>
+		<td>
+			<select id="locais">
+			    <option value=""></option>
+			    <option value="en" th:text="#{lang.eng}"></option>
+			    <option value="br" th:text="#{lang.br}"></option>
+			</select>
+		</td>
+	</tr>
+	</tbody>
+</table>
+
 	</header>
 
 
-<table>
+<table class="container">
 	<thead>
 	<tr>
-		<th>Nome</th>
-		<th>Local</th>
-		<th>Data</th>
-		<th>Horario</th>
-		<th>Deletar</th>
+		<th th:text="#{coluna.Nome}"></th>
+		<th th:text="#{coluna.Local}"></th>
+		<th th:text="#{coluna.Data}"></th>
+		<th th:text="#{coluna.Horario}"></th>
+		<th th:text="#{coluna.Deletar}"></th>
 	</tr>
 	</thead>
 	
@@ -55,6 +72,20 @@
 	
       <!--JavaScript at end of body for optimized loading-->
       <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      
+		<script type="text/javascript">
+		$(document).ready(function() {
+		    $("#locais").change(function () {
+		        var selectedOption = $('#locais').val();
+		        if (selectedOption != ''){
+		            window.location.replace('/eventos?lang=' + selectedOption);
+		        }
+		    });
+		});
+		</script>
 
 </body>
 </html>
+
+
