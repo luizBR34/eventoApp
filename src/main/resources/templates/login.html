@@ -19,16 +19,16 @@
     <div style="width:40%; margin-left:auto; margin-right:auto;" th:fragment="content">
         <form name="f" th:action="@{/login}" method="post">               
             <fieldset>
-                <legend>Por favor se indentifique primeiro</legend>
+                <legend th:text="#{login.titulo}"></legend>
                 <div th:if="${param.error}" class="alert alert-error">    
                     Usuario e Senha Invalidos.
                 </div>
                 <div th:if="${param.logout}" class="alert alert-success"> 
                     Voce saiu do sistema.
                 </div>
-                <label for="username">Usuario</label>
+                <label for="username" th:text="#{login.usuario}"></label>
                 <input type="text" id="username" name="username"/>        
-                <label for="password">Senha</label>
+                <label for="password" th:text="#{login.senha}"></label>
                 <input type="password" id="password" name="password"/>    
                 <div class="form-actions">
                     <button type="submit" class="btn">Log in</button>

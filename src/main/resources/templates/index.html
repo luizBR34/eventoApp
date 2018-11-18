@@ -22,27 +22,30 @@
 	
 	  <nav class="menu">
 	    <div class="nav-wrapper">
-	      	<a href="#" class="brand-logo" th:text="#{titulo}"></a>
-	      	<ul id="nav-mobile" class="right hide-on-med-and-down">
-	        	<li><a href="/cadastrarEvento" class="waves-effect waves-light btn" th:text="#{botao.CadastroEvento}"><i class="material-icons left">add_circle_outline</i></a></li>
-	      	</ul>
+			    
+		<table id="posicionamentoHeader">
+			<tbody>
+			<tr>
+			<td style="width: 35%;"><a href="#" class="brand-logo" th:text="#{titulo}"></a></td>
+			<td style="width: 155px;"><span th:text="#{lang.mudarLingua}" style="font-weight: bold;font-size: 0.9rem;"></span>:</td>
+				<td>
+					<select id="locais">
+					    <option value=""></option>
+					    <option value="en" th:text="#{lang.eng}"></option>
+					    <option value="br" th:text="#{lang.br}"></option>
+					</select>
+				</td>
+			<td>
+		      	<ul id="nav-mobile" class="right hide-on-med-and-down">
+		        	<li><a href="/cadastrarEvento" class="waves-effect waves-light btn" th:text="#{botao.CadastroEvento}"><i class="material-icons left">add_circle_outline</i></a></li>
+		      	</ul>
+			</td>
+			</tr>
+			</tbody>
+		</table>
+	      	
 	    </div>
 	  </nav>
-	  
-	  
-<table>
-	<tbody>
-	<tr><td style="width: 15%;"><span th:text="#{lang.mudarLingua}"></span>:</td>
-		<td>
-			<select id="locais">
-			    <option value=""></option>
-			    <option value="en" th:text="#{lang.eng}"></option>
-			    <option value="br" th:text="#{lang.br}"></option>
-			</select>
-		</td>
-	</tr>
-	</tbody>
-</table>
 
 	</header>
 

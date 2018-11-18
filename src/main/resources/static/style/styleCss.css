@@ -36,14 +36,31 @@
 
 
 .menu{
+	height: 90px;
 	background-color: #3399ff;
 }
 
+
+.brand-logo {
+	position: relative !important;
+}
 
 
 #locais {
 	display: block;
 	width: 10rem;
 	height: 2rem;
+}
+
+#posicionamentoHeader {
+	border-collapse: unset;
+}
+
+
+.errorAcesso {
+	font-size: 20px;
+	color: red;
+	padding-left: 30rem;
+	font-weight: bold;
 }
 
