@@ -128,7 +128,6 @@ public class EventoController implements ErrorController {
 	}
 	
 
-	
     @RequestMapping(value = PATH)
     public String manipulaError(HttpServletRequest request) {
 
@@ -150,8 +149,7 @@ public class EventoController implements ErrorController {
 
         return "error";
     }
-	
-
+    
 
     @Override
     public String getErrorPath() {

@@ -26,7 +26,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
-	
 	//Define quais páginas vão precisar de autenticação
 	@Override
 	protected void configure(HttpSecurity http) throws java.lang.Exception {
@@ -38,7 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and().formLogin().loginPage("/login").defaultSuccessUrl("/", true).failureUrl("/login?error=true")
 		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")); //Define uma view de logout
 	}
-	
 	
 	
 	//Define a autenticação de páginas estáticas (não bloquear style)

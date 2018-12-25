@@ -27,5 +27,6 @@ public class DataConfigurationPostgreSQL {
         basicDataSource.setPassword(password);
 
         return basicDataSource;
-    } 
+    }
+
 }

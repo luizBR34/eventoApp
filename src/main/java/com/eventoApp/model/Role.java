@@ -1,5 +1,6 @@
 package com.eventoApp.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -18,10 +19,11 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
-@Entity
-@Table(name = "Role")
-public class Role implements GrantedAuthority {
-
+@Entity(name = "Role")
+@Table(name = "role")
+public class Role implements GrantedAuthority, Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "nomeRole")

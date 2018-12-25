@@ -16,8 +16,8 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity
-@Table(name = "Usuario")
+@Entity(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -35,13 +35,14 @@ public class Usuario implements UserDetails, Serializable {
 	@Column(name = "senha")
 	private String senha;
 
+	@Column(name="roles")
 	@ManyToMany
 	@JoinTable(name = "usuarios_roles", 
 			   joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "login"), 
 			   inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "nomeRole")) 
     private List<Role> roles;
 	
-
+	
 	public String getLogin() {
 		return login;
 	}

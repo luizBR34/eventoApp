@@ -9,8 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "Convidado")
+@Entity(name = "Convidado")
+@Table(name = "convidado")
 public class Convidado implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

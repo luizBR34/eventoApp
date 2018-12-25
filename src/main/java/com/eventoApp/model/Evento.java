@@ -12,14 +12,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "Evento")
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity(name = "Evento")
+@Table(name = "evento")
 public class Evento implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
 	@Column(name = "codigo")
 	private long codigo;
 	
