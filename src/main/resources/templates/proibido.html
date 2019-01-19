@@ -15,9 +15,21 @@
 
 <title>Acesso Negado!</title>
 </head>
+<style>
+tr {
+	border-bottom: transparent !important;
+}
+</style>
 <body>
-<h2 class="errorAcesso">ACESSO PROIBIDO! </h2>
-<h2 class="errorAcesso">Voce nao tem acesso a essa pagina!</h2>
-<a href="/">Voltar</a>
+
+<table class="container tabelaConvidado">
+		<tbody>
+			<tr><td><span th:text="#{pagina.proibido.titulo}" class="errorAcesso centralizar"></span></td></tr>
+			<tr><td><img src="images/proibido.jpg" alt="Proibido!" height="100" width="100" class="centralizar"></td></tr>
+			<tr><td><span th:text="#{pagina.proibido.msg}" class="errorAcesso centralizar"></span></td></tr>
+			<tr><td><a href="/" th:text="#{pagina.proibido.voltar}"></a></td></tr>
+		</tbody>
+</table> 
+
 </body>
 </html>

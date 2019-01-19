@@ -19,6 +19,15 @@
 }
 
 
+.centralizar {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+        
+
+
 .formEvento {
 	box-shadow: 0px 0px 5px grey;
 	padding-top: 20px;
@@ -61,7 +70,7 @@
 .errorAcesso {
 	font-size: 20px;
 	color: red;
-	padding-left: 30rem;
 	font-weight: bold;
+	padding-left: 35%;
 }
 

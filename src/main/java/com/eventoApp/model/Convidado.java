@@ -2,31 +2,19 @@ package com.eventoApp.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity(name = "Convidado")
-@Table(name = "convidado")
 public class Convidado implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@NotBlank
-	@Column(name = "rg")
+
+	@JsonProperty("rg")
 	private String rg;
 	
-	@NotBlank
-	@Column(name = "nomeConvidado")
+	@JsonProperty("nomeConvidado")
 	private String nomeConvidado;
 	
-	//Aqui se especifica a relação entre tabelas
-	//Muitos Convidados para um Evento só
-	@ManyToOne
 	private Evento evento;
 
 	

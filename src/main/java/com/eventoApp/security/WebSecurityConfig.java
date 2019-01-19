@@ -1,6 +1,7 @@
 package com.eventoApp.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
+	
 	//Define quais páginas vão precisar de autenticação
 	@Override
 	protected void configure(HttpSecurity http) throws java.lang.Exception {
@@ -33,9 +37,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/").permitAll() // Permite apenas a requisição que termina em / não ter autenticação
 		.antMatchers(HttpMethod.GET, "/cadastrarEvento").hasRole("ADMIN") //Apenas admin tem acesso a essa operação
 		.antMatchers(HttpMethod.POST, "/cadastrarEvento").hasRole("ADMIN")
+		.antMatchers(HttpMethod.GET, "/deletarEvento").hasRole("ADMIN")
+		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasRole("ADMIN")
+		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasRole("USER")
 		.antMatchers("/login*").permitAll()
 		.and().formLogin().loginPage("/login").defaultSuccessUrl("/", true).failureUrl("/login?error=true")
 		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")); //Define uma view de logout
+		
+		http.sessionManagement().maximumSessions(1).sessionRegistry(registroSecao());
 	}
 	
 	
@@ -44,5 +53,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws java.lang.Exception {
 		web.ignoring().antMatchers("/materialize/**", "/style/**");
 	}
-
+	
+	
+    @Bean
+    public SessionRegistry registroSecao() {
+        return new SessionRegistryImpl();
+    }
 }

@@ -1,46 +1,29 @@
 package com.eventoApp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity(name = "Usuario")
-@Table(name = "usuario")
+import com.eventoApp.model.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Usuario implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@NotBlank
-	@Column(name = "login")
+	@JsonProperty("login")
 	private String login;
 	
-	@NotBlank
-	@Column(name = "nomeCompleto")
+	@JsonProperty("nomeCompleto")
 	private String nomeCompleto;
 	
-	@NotBlank
-	@Column(name = "senha")
+	@JsonProperty("senha")
 	private String senha;
 
-	@Column(name="roles")
-	@ManyToMany
-	@JoinTable(name = "usuarios_roles", 
-			   joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "login"), 
-			   inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "nomeRole")) 
-    private List<Role> roles;
+	private Role role;
 	
 	
 	public String getLogin() {
@@ -67,21 +50,22 @@ public class Usuario implements UserDetails, Serializable {
 		this.senha = senha;
 	}
 	
-
-	public List<Role> getRoles() {
-		return roles;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
-	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return (Collection<? extends GrantedAuthority>) this.roles;
+		
+		ArrayList<Role> papeis = new ArrayList<Role>();
+		papeis.add(this.role);
+
+		return papeis;
 	}
-	
 
 	@Override
 	public String getPassword() {

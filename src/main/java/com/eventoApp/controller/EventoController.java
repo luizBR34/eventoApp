@@ -1,12 +1,19 @@
 package com.eventoApp.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,26 +21,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.userdetails.User;
 
 import com.eventoApp.model.Convidado;
 import com.eventoApp.model.Evento;
-import com.eventoApp.repository.ConvidadoRepository;
-import com.eventoApp.repository.EventoRepository;
+import com.eventoApp.model.Usuario;
+import com.eventoApp.service.ClientService;
 
 @Controller
 public class EventoController implements ErrorController {
-	
+
 	@Autowired
-	private EventoRepository rep;
+	private ClientService sr;
 	
-	@Autowired
-	private ConvidadoRepository cr;
+    @Autowired
+    private SessionRegistry registroSecao;
+	
+	private Logger log = LoggerFactory.getLogger(EventoController.class);
 	
 	private static final String PATH = "/error";
 	
-	
+
 	@RequestMapping("/")
 	public String index() {
+		log.info("EventoController:index()");
 		return "redirect:/eventos"; //Retorna a Lista de Eventos
 	}
 	
@@ -44,6 +55,7 @@ public class EventoController implements ErrorController {
 	}
 
 	
+	//Método chamado pelo form da página formEvento.html
 	@RequestMapping(value="/cadastrarEvento", method=RequestMethod.POST)
 	public String form(@Valid Evento evento, BindingResult result, RedirectAttributes attributes) {
 		
@@ -52,37 +64,80 @@ public class EventoController implements ErrorController {
 				attributes.addFlashAttribute("mensagem", "Verifique os campos!");
 				return "redirect:cadastrarEvento";
 			}
+
+		sr.cadastraEvento(evento);
 		
-		rep.save(evento);
 		attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
 		return "redirect:cadastrarEvento";
 	}
 	
 	
-	
-	
 	@RequestMapping("/eventos")
 	public ModelAndView listaEventos() {
+		
+		log.info("EventoController:listaEventos()");
+		
 		ModelAndView mv = new ModelAndView("index"); //Obtem um referencia da Página
-		Iterable<Evento> lista = rep.findAll(); //Realiza uma busca no banco
+		
+		Iterable<Evento> lista = sr.listaEventos();
+		
+		logRequisicao("listaEventos()", lista);
+		
 		mv.addObject("eventos", lista); //adiciona à página
+		
+		List<String> usuarios = recuperaUsuariosLogados();
+		
+			if (!usuarios.isEmpty()) {
+				mv.addObject("usuario", usuarios.get(0));
+				log.info("EventoController:listaEventos() - USUARIO LOGADO: " + usuarios.get(0));
+
+			} else {
+				mv.addObject("usuario", "visitante");
+				log.info("EventoController:listaEventos() - NÃO HÁ NENHUM USUARIO LOGADO!");
+			}
+
 		return mv;
 	}
 	
 	
+	
+	
+	public List<String> recuperaUsuariosLogados() {
+	    return registroSecao.getAllPrincipals().stream()
+	    									   .filter(u -> !registroSecao.getAllSessions(u, false).isEmpty())
+	    									   .map(u -> User.class.cast(u).getUsername())
+	    									   .collect(Collectors.toList());
+	}
+	
+	
+
+	
+	//Chamado ao clicar num item de evento
 	@RequestMapping(value="/{codigo}", method=RequestMethod.GET)
 	public ModelAndView detalhesEvento(@PathVariable("codigo") long codigo) {
-		Evento evento = rep.findByCodigo(codigo);
+		
+		log.info("EventoController:detalhesEvento()");
+		
+		Evento evento = sr.buscaEvento(codigo);
+		
+		logRequisicao("detalhesEvento()", evento);
+		
 		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
 		mv.addObject("eventos", evento);
 		
-		Iterable<Convidado> convidados = cr.findByEvento(evento);
-		mv.addObject("convidados", convidados);
+		Iterable<Convidado> convidados = sr.listaConvidados(evento);
 		
+		logRequisicao("detalhesEvento()", convidados);
+		
+		mv.addObject("convidados", convidados);
 		return mv;
 	}
 	
 	
+
+
+	
+	//Chamado ao cadastrar um convidado na página detalhesEvento.html
 	@RequestMapping(value="/{codigo}", method=RequestMethod.POST)
 	public String detalhesEventoPost(@PathVariable("codigo") long codigo, @Valid Convidado convidado, BindingResult result, RedirectAttributes attributes) {
 
@@ -92,9 +147,8 @@ public class EventoController implements ErrorController {
 				return "redirect:/{codigo}";
 			}
 		
-		Evento evento = rep.findByCodigo(codigo);
-		convidado.setEvento(evento);
-		cr.save(convidado);
+		sr.cadastraConvidado(codigo, convidado);
+		
 		attributes.addFlashAttribute("mensagem", "Convidado adicionado com sucesso!");
 		return "redirect:/{codigo}";
 	}
@@ -102,18 +156,18 @@ public class EventoController implements ErrorController {
 
 	@RequestMapping("/deletarEvento")
 	public String deletarEvento(long codigo) {
-		Evento evento = rep.findByCodigo(codigo);
-		rep.delete(evento);
+		
+		sr.deletaEvento(codigo);
+		
 		return "redirect:/eventos"; //Retorna a Lista de Eventos
 	}
 	
 
 	@RequestMapping("/deletarConvidado")
 	public String deletarConvidado(String rg) {
-		Convidado convidado = cr.findByRg(rg);
-		cr.delete(convidado);
 		
-		Evento evento = convidado.getEvento();
+		Evento evento = sr.deletaConvidado(rg);
+		
 		long codigoEvento = evento.getCodigo();
 		String codigo = "" + codigoEvento;
 		
@@ -132,7 +186,7 @@ public class EventoController implements ErrorController {
     public String manipulaError(HttpServletRequest request) {
 
     	Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        
+
         if (status != null) {
             Integer statusCode = Integer.valueOf(status.toString());
          
@@ -155,4 +209,13 @@ public class EventoController implements ErrorController {
     public String getErrorPath() {
         return PATH;
     }
+    
+    
+	public void logRequisicao(String nomeMetodo, Object o) {
+		if (o != null) {
+			log.info("EventoController:" + nomeMetodo + "." + o.getClass().getName() + " criado com sucesso!");
+		} else {
+			log.error("ERROR: " + "EventoController:" + nomeMetodo);
+		}
+	}
 }

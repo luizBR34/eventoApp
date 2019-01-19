@@ -15,9 +15,25 @@
 
 <title>Error</title>
 </head>
+<style>
+tr {
+	border-bottom: transparent !important;
+}
+
+.ajusteCentro {
+	padding-left: 45% !important;
+}
+</style>
 <body>
-<h2 class="errorAcesso">Essa e uma pagina de erro!</h2>
-<h2 class="errorAcesso">"Ocorreu um erro no carregamento das paginas!"</h2>
-<a href="/">Voltar</a>
+
+<table class="container tabelaConvidado">
+		<tbody>
+			<tr><td><span th:text="#{pagina.error.titulo}" class="errorAcesso centralizar ajusteCentro"></span></td></tr>
+			<tr><td><img src="images/error.jpg" alt="Proibido!" height="150" width="150" class="centralizar"></td></tr>
+			<tr><td><span th:text="#{pagina.error.msg}" class="errorAcesso centralizar"></span></td></tr>
+			<tr><td><a href="/" th:text="#{pagina.proibido.voltar}"></a></td></tr>
+		</tbody>
+</table> 
+
 </body>
 </html>
