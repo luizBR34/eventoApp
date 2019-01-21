@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -95,7 +94,8 @@ public class EventoController implements ErrorController {
 				mv.addObject("usuario", "visitante");
 				log.info("EventoController:listaEventos() - NÃO HÁ NENHUM USUARIO LOGADO!");
 			}
-
+			
+		usuarios.clear();
 		return mv;
 	}
 	
@@ -123,7 +123,7 @@ public class EventoController implements ErrorController {
 		logRequisicao("detalhesEvento()", evento);
 		
 		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
-		mv.addObject("eventos", evento);
+		mv.addObject("event", evento);
 		
 		Iterable<Convidado> convidados = sr.listaConvidados(evento);
 		
@@ -139,7 +139,9 @@ public class EventoController implements ErrorController {
 	
 	//Chamado ao cadastrar um convidado na página detalhesEvento.html
 	@RequestMapping(value="/{codigo}", method=RequestMethod.POST)
-	public String detalhesEventoPost(@PathVariable("codigo") long codigo, @Valid Convidado convidado, BindingResult result, RedirectAttributes attributes) {
+	public String cadastrarConvidado(@PathVariable("codigo") long codigo, @Valid Convidado convidado, BindingResult result, RedirectAttributes attributes) {
+		
+		log.info("EventoController:cadastrarConvidado()");
 
 			//Se ocorrer um erro no input de dados, uma mensagem é exibida para o usuário
 			if (result.hasErrors()) {

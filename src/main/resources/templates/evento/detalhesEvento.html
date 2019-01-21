@@ -30,7 +30,7 @@
 	  </nav>
 	</header>
 
-	<div th:each="ev : ${eventos}" class="container detalhesEvento"> <!-- "event" foi a mesma String especificada na linha mv.addObject("evento", evento);  do método detalhesEvento() -->
+	<div th:each="ev : ${event}" class="container detalhesEvento"> <!-- "event" foi a mesma String especificada na linha mv.addObject("event", evento);  do método detalhesEvento() -->
 	<h5 th:text="#{detalhe.Evento.Subtitulo}"></h5>
 		<div class ="row">
 			<p><span th:text="#{coluna.Nome}"></span>: <span th:text="${ev.nome}"></span></p>

@@ -37,9 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/").permitAll() // Permite apenas a requisição que termina em / não ter autenticação
 		.antMatchers(HttpMethod.GET, "/cadastrarEvento").hasRole("ADMIN") //Apenas admin tem acesso a essa operação
 		.antMatchers(HttpMethod.POST, "/cadastrarEvento").hasRole("ADMIN")
+		.antMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN", "USER")
 		.antMatchers(HttpMethod.GET, "/deletarEvento").hasRole("ADMIN")
-		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasRole("ADMIN")
-		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasRole("USER")
+		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasAnyRole("ADMIN", "USER")
 		.antMatchers("/login*").permitAll()
 		.and().formLogin().loginPage("/login").defaultSuccessUrl("/", true).failureUrl("/login?error=true")
 		.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")); //Define uma view de logout
@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//Define a autenticação de páginas estáticas (não bloquear style)
 	@Override
 	public void configure(WebSecurity web) throws java.lang.Exception {
-		web.ignoring().antMatchers("/materialize/**", "/style/**");
+		web.ignoring().antMatchers("/materialize/**", "/style/**", "/images/**");
 	}
 	
 	

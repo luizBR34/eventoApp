@@ -17,8 +17,7 @@ public class EventoAppApplication extends SpringBootServletInitializer {
  
     public static void main(String[] args) {
     	//System.setProperty("spring.devtools.restart.enabled", "false");
-        SpringApplication sa = new SpringApplication(EventoAppApplication.class);
-        sa.run(args);
+        SpringApplication.run(EventoAppApplication.class, args);
     }
 
 }
