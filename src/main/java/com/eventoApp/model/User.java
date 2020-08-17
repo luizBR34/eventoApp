@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.eventoApp.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Usuario implements UserDetails, Serializable {
+public class User implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

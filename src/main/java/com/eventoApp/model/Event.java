@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Evento implements Serializable {
+public class Event implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class Evento implements Serializable {
 	@JsonProperty("horario")
 	private String horario;
 	
-	private List<Convidado> convidados;
+	private List<Guest> convidados;
 
 
 	public long getCodigo() {

@@ -2,71 +2,63 @@ package com.eventoApp.service.impl;
 
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.env.Environment;
 
-import com.eventoApp.model.Evento;
-import com.eventoApp.model.Convidado;
-import com.eventoApp.model.Usuario;
+import com.eventoApp.model.Event;
+import com.eventoApp.model.Guest;
+import com.eventoApp.model.User;
 import com.eventoApp.service.ClientService;
+
 
 @Service
 public class ClientServiceImpl implements ClientService {
 	
 	private Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
 	
-	private static final String REST_URI = "http://localhost:9090/eventoWS";
-	
-	private WebResource resource;
-	
-	
-	public ClientServiceImpl() {
-		
-		DefaultClientConfig configPadrao = new DefaultClientConfig();
-		configPadrao.getClasses().add(JacksonJsonProvider.class);
-		
-		Client client = Client.create(configPadrao);
-		
-		resource = client.resource(REST_URI);
-		
-	}
-	
+    @Autowired
+    @Qualifier("template")
+    private AmqpTemplate template;
 
+    @Autowired
+    private Environment env;
 	
-	public Iterable<Evento> listaEventos() {
+    @Value(value = "${eventows.endpoint.uri}")
+    private String endpointURI;
+	
+	RestTemplate restTemplate = new RestTemplate();
+	
+	
+	public List<Event> listEvents() {
 		
 		log.info("ClientServiceImpl:listaEventos()");
 		
-		ClientResponse resposta = resource.accept(MediaType.APPLICATION_JSON)
-										  .get(ClientResponse.class);
+		ResponseEntity<List<Event>> responseEntity = restTemplate.exchange(endpointURI, HttpMethod.GET, null, new ParameterizedTypeReference<List<Event>>() { });
+		List<Event> listOfEvents = null;
 		
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("ClientServiceImpl:listEvents() - EventoWS API responded the request successfully!");
+			listOfEvents = responseEntity.getBody();
+		} else {
+			log.error("Error when request event's list from API!");
+		}
 		
-			if (resposta.getStatusInfo() == ClientResponse.Status.OK) {
-				
-				log.info("ClientServiceImpl:listaEventos().ClientResponse.getStatusInfo() = OK");
-				Iterable<Evento> listaEventos = resposta.getEntity(new GenericType<List<Evento>>() { });
-				return listaEventos;
-	    		
-			} else {
-				
-				log.warn("ClientServiceImpl:listaEventos().ClientResponse.getStatusInfo() = " + resposta.getStatusInfo().getStatusCode());
-				return null;
-			}
+		return listOfEvents;
 	}
 
 	
+	/*
 	public Evento buscaEvento(long codigo) {
 		
 		log.info("ClientServiceImpl:buscaEvento()");
@@ -154,31 +146,20 @@ public class ClientServiceImpl implements ClientService {
 				return false;
 			}
 	}
+	*/
 	
 	
-	
-	public boolean cadastraEvento(Evento evento) {
+	public void saveEvent(Event event) {
 
-		log.info("ClientServiceImpl:cadastraEvento()");
+		log.info("ClientServiceImpl:saveEvent()");
 		
-		ClientResponse resposta = resource.path("cadastraEvento")
-										  .type(MediaType.APPLICATION_JSON)
-				  						  .accept(MediaType.APPLICATION_JSON)
-				  						  .post(ClientResponse.class, evento);
-
-			if (resposta.getStatusInfo() == ClientResponse.Status.OK) {
-			
-				log.info("ClientServiceImpl:cadastraEvento().ClientResponse.getStatusInfo() = OK");
-				return true;
-			
-			} else {
-			
-				log.warn("ClientServiceImpl:cadastraEvento().ClientResponse.getStatusInfo() = " + resposta.getStatusInfo().getStatusCode());
-				return false;
-			}
+        String topicExchangePrice = env.getProperty("name.topicexchange.assortment");
+        String routingKey = env.getProperty("name.routingKey.updates");
+        
+        template.convertAndSend(topicExchangePrice, routingKey, event);
 	}
 	
-	
+	/*
 	public void deletaEvento(long codigo) {
 		
 		log.info("ClientServiceImpl:deletaEvento()");
@@ -213,4 +194,5 @@ public class ClientServiceImpl implements ClientService {
 				return null;
 			}
 	}
+	*/
 }

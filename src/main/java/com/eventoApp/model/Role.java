@@ -14,7 +14,7 @@ public class Role implements GrantedAuthority, Serializable {
 	@JsonProperty("nomeRole")
 	private String nomeRole;
 	
-	private List<Usuario> usuarios;
+	private List<User> usuarios;
 	
 
 	public String getNomeRole() {

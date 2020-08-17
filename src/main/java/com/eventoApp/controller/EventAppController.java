@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,15 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.userdetails.User;
 
-import com.eventoApp.model.Convidado;
-import com.eventoApp.model.Evento;
-import com.eventoApp.model.Usuario;
+import com.eventoApp.model.Guest;
+import com.eventoApp.model.Event;
 import com.eventoApp.service.ClientService;
 
 @Controller
-public class EventoController implements ErrorController {
+public class EventAppController implements ErrorController {
 
 	@Autowired
 	private ClientService sr;
@@ -36,7 +35,7 @@ public class EventoController implements ErrorController {
     @Autowired
     private SessionRegistry registroSecao;
 	
-	private Logger log = LoggerFactory.getLogger(EventoController.class);
+	private Logger log = LoggerFactory.getLogger(EventAppController.class);
 	
 	private static final String PATH = "/error";
 	
@@ -44,7 +43,7 @@ public class EventoController implements ErrorController {
 	@RequestMapping("/")
 	public String index() {
 		log.info("EventoController:index()");
-		return "redirect:/eventos"; //Retorna a Lista de Eventos
+		return "redirect:/eventos";
 	}
 	
 	
@@ -56,7 +55,7 @@ public class EventoController implements ErrorController {
 	
 	//Método chamado pelo form da página formEvento.html
 	@RequestMapping(value="/cadastrarEvento", method=RequestMethod.POST)
-	public String form(@Valid Evento evento, BindingResult result, RedirectAttributes attributes) {
+	public String form(@Valid Event evento, BindingResult result, RedirectAttributes attributes) {
 		
 			//Se ocorrer um erro no input de dados, uma mensagem é exibida para o usuário
 			if (result.hasErrors()) {
@@ -64,7 +63,7 @@ public class EventoController implements ErrorController {
 				return "redirect:cadastrarEvento";
 			}
 
-		sr.cadastraEvento(evento);
+		sr.saveEvent(evento);
 		
 		attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
 		return "redirect:cadastrarEvento";
@@ -73,12 +72,12 @@ public class EventoController implements ErrorController {
 	
 	@RequestMapping("/eventos")
 	public ModelAndView listaEventos() {
-		
+
 		log.info("EventoController:listaEventos()");
 		
-		ModelAndView mv = new ModelAndView("index"); //Obtem um referencia da Página
+		ModelAndView mv = new ModelAndView("index");
 		
-		Iterable<Evento> lista = sr.listaEventos();
+		Iterable<Event> lista = sr.listEvents();
 		
 		logRequisicao("listaEventos()", lista);
 		
@@ -111,7 +110,7 @@ public class EventoController implements ErrorController {
 	
 	
 
-	
+	/*
 	//Chamado ao clicar num item de evento
 	@RequestMapping(value="/{codigo}", method=RequestMethod.GET)
 	public ModelAndView detalhesEvento(@PathVariable("codigo") long codigo) {
@@ -132,14 +131,14 @@ public class EventoController implements ErrorController {
 		mv.addObject("convidados", convidados);
 		return mv;
 	}
-	
+	*/
 	
 
 
 	
 	//Chamado ao cadastrar um convidado na página detalhesEvento.html
 	@RequestMapping(value="/{codigo}", method=RequestMethod.POST)
-	public String cadastrarConvidado(@PathVariable("codigo") long codigo, @Valid Convidado convidado, BindingResult result, RedirectAttributes attributes) {
+	public String cadastrarConvidado(@PathVariable("codigo") long codigo, @Valid Guest convidado, BindingResult result, RedirectAttributes attributes) {
 		
 		log.info("EventoController:cadastrarConvidado()");
 
@@ -149,7 +148,7 @@ public class EventoController implements ErrorController {
 				return "redirect:/{codigo}";
 			}
 		
-		sr.cadastraConvidado(codigo, convidado);
+		//sr.cadastraConvidado(codigo, convidado);
 		
 		attributes.addFlashAttribute("mensagem", "Convidado adicionado com sucesso!");
 		return "redirect:/{codigo}";
@@ -159,12 +158,13 @@ public class EventoController implements ErrorController {
 	@RequestMapping("/deletarEvento")
 	public String deletarEvento(long codigo) {
 		
-		sr.deletaEvento(codigo);
+		//sr.deletaEvento(codigo);
 		
 		return "redirect:/eventos"; //Retorna a Lista de Eventos
 	}
 	
 
+	/*
 	@RequestMapping("/deletarConvidado")
 	public String deletarConvidado(String rg) {
 		
@@ -175,7 +175,7 @@ public class EventoController implements ErrorController {
 		
 		return "redirect:/" + codigo; // chama o método detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
 	}
-	
+	*/
 	
 
 	@RequestMapping("/login")

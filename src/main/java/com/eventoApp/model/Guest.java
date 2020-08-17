@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Convidado implements Serializable {
+public class Guest implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class Convidado implements Serializable {
 	@JsonProperty("nomeConvidado")
 	private String nomeConvidado;
 	
-	private Evento evento;
+	private Event evento;
 
 	
 	public String getRg() {
@@ -31,10 +31,10 @@ public class Convidado implements Serializable {
 		this.nomeConvidado = nomeConvidado;
 	}
 	
-	public Evento getEvento() {
+	public Event getEvento() {
 		return evento;
 	}
-	public void setEvento(Evento evento) {
+	public void setEvento(Event evento) {
 		this.evento = evento;
 	}
 }
