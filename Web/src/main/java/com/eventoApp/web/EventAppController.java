@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.eventoApp.model.Event;
-import com.eventoApp.model.Guest;
-import com.eventoApp.service.ClientService;
+import com.eventoApp.models.Event;
+import com.eventoApp.models.Guest;
+import com.eventoApp.services.ClientService;
 
 @RestController
 @RequestMapping

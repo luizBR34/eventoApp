@@ -21,6 +21,16 @@
             <artifactId>mappers</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.eventoApp.models</groupId>
+            <artifactId>models</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.eventoApp.models</groupId>
+            <artifactId>service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	<!-- MODULES DENPENDENCY END -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
