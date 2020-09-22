@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import com.eventoApp.service.ClientService;
+import com.eventoApp.services.ClientService;
 
 @Repository
 @Transactional
@@ -25,7 +25,7 @@ public class ImplementsUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		
-		com.eventoApp.model.User usuario = service.buscaUsuario(login);
+		com.eventoApp.models.User usuario = service.seekUser(login);
 		
 		if (usuario == null) {
 			log.warn("ImplementsUserDetailsService:loadUserByUsername() - USUARIO NÃO ENCONTRADO!");

@@ -12,7 +12,7 @@ public interface ClientService {
 	
 	public Event searchEvent(long code);
 
-	//public Usuario buscaUsuario(String login);
+	public User seekUser(String login);
 	
 	public List<Guest> listGuests(Event event);
 	

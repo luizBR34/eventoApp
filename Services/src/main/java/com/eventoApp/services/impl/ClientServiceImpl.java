@@ -82,28 +82,27 @@ public class ClientServiceImpl implements ClientService {
 
 	
 	
-	/*
-	public Usuario buscaUsuario(String login) {
+	
+	public User seekUser(String login) {
 		
-		log.info("ClientServiceImpl:buscaUsuario()");
+		log.info("START - ClientServiceImpl:seekUser()");
 		
-		ClientResponse resposta = resource.path("buscaUsuario/" + login)
-										  .accept(MediaType.APPLICATION_JSON)
-										  .get(ClientResponse.class);
-
-			if (resposta.getStatusInfo() == ClientResponse.Status.OK) {
-				
-				log.info("ClientServiceImpl:buscaUsuario().ClientResponse.getStatusInfo() = OK");
-				Usuario usuario = resposta.getEntity(Usuario.class);
-				return usuario;
-	    		
-			} else {
-				
-				log.warn("ClientServiceImpl:buscaUsuario().ClientResponse.getStatusInfo() = " + resposta.getStatusInfo().getStatusCode());
-				return null;
-			}	
+		String path = eventoCacheEndpointURI + "/seekUser/" + login;
+		
+		ResponseEntity<User> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null, User.class);
+		User user = null;
+		
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("ClientServiceImpl:seekUser() - EventoCache API responded the request successfully!");
+			user = responseEntity.getBody();
+		} else {
+			log.error("Error when request event's list from API!");
+		}
+		
+		log.info("END - ClientServiceImpl:seekUser()");
+		return user;	
 	}
-	*/
+	
 	
 	
 	public List<Guest> listGuests(long eventCode) {		
