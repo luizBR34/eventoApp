@@ -27,8 +27,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.eventoApp.models</groupId>
-            <artifactId>service</artifactId>
+            <groupId>com.eventoApp.services</groupId>
+            <artifactId>services</artifactId>
             <version>${project.version}</version>
         </dependency>
 	<!-- MODULES DENPENDENCY END -->

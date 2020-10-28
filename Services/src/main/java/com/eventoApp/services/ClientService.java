@@ -10,17 +10,17 @@ public interface ClientService {
 	
 	public List<Event> listEvents();
 	
-	public Event searchEvent(long code);
+	public Event seekEvent(long code);
 
 	public User seekUser(String login);
 	
-	public List<Guest> listGuests(Event event);
+	public List<Guest> listGuests(long eventCode);
 	
-	//public boolean cadastraConvidado(long codigoEvento, Convidado convidado);
+	public void saveGuest(long eventCode, Guest guest);
 	
 	public void saveEvent(Event evento);
 	
-	//public void deletaEvento(long codigo);
+	public void deleteEvent(long code);
 	
-	//public Evento deletaConvidado(String rg);
+	public Event deleteGuest(long id);
 }

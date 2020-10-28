@@ -94,7 +94,7 @@ public class EventAppController implements ErrorController {
 
 			} else {
 				mv.addObject("usuario", "visitante");
-				log.info("EventoController:listaEventos() - NÃƒO HÃ� NENHUM USUARIO LOGADO!");
+				log.info("EventoController:listaEventos() - NENHUM USUARIO LOGADO!");
 			}
 			
 		usuarios.clear();
@@ -122,14 +122,14 @@ public class EventAppController implements ErrorController {
 		
 		log.info("START - EventAppController:eventDetail()");
 		
-		Event soughtEvent = sr.searchEvent(code);
+		Event soughtEvent = sr.seekEvent(code);
 		
 		verifyRequestedObject("eventDetail()", soughtEvent);
 		
 		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
 		mv.addObject("event", soughtEvent);
 		
-		List<Guest> guests = sr.listGuests(soughtEvent);
+		List<Guest> guests = sr.listGuests(soughtEvent.getCode());
 		
 		verifyRequestedObject("eventDetail()", guests);
 		
@@ -144,18 +144,17 @@ public class EventAppController implements ErrorController {
 
 	
 	//Chamado ao cadastrar um convidado na pÃ¡gina detalhesEvento.html
-	@PostMapping(value="/{codigo}")
-	public String cadastrarConvidado(@PathVariable("codigo") long codigo, @Valid Guest convidado, BindingResult result, RedirectAttributes attributes) {
+	@PostMapping(value="/{eventCode}")
+	public String saveGuest(@PathVariable("eventCode") long eventCode, @Valid Guest guest, BindingResult result, RedirectAttributes attributes) {
 		
-		log.info("EventoController:cadastrarConvidado()");
-
-			//Se ocorrer um erro no input de dados, uma mensagem Ã© exibida para o usuÃ¡rio
+		log.info("EventoController:saveGuest()");
+		
 			if (result.hasErrors()) {
 				attributes.addFlashAttribute("mensagem", "Verifique os campos!");
 				return "redirect:/{codigo}";
 			}
 		
-		//sr.cadastraConvidado(codigo, convidado);
+		sr.saveGuest(eventCode, guest);
 		
 		attributes.addFlashAttribute("mensagem", "Convidado adicionado com sucesso!");
 		return "redirect:/{codigo}";
@@ -163,27 +162,25 @@ public class EventAppController implements ErrorController {
 	
 
 	@DeleteMapping("/deletarEvento")
-	public String deletarEvento(long codigo) {
+	public String deletarEvento(long code) {
 		
-		//sr.deletaEvento(codigo);
-		
-		return "redirect:/eventos"; //Retorna a Lista de Eventos
+		sr.deleteEvent(code);
+		return "redirect:/eventos"; 
 	}
 	
 
-	/*
-	@RequestMapping("/deletarConvidado")
-	public String deletarConvidado(String rg) {
-		
-		Evento evento = sr.deletaConvidado(rg);
-		
-		long codigoEvento = evento.getCodigo();
-		String codigo = "" + codigoEvento;
-		
-		return "redirect:/" + codigo; // chama o mÃ©todo detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
-	}
-	*/
 	
+	@RequestMapping("/deletarConvidado")
+	public String deleteGuest(long id) {
+		
+		Event event = sr.deleteGuest(id);
+		
+		long eventCode = event.getCode();
+		String code = "" + eventCode;
+		
+		return "redirect:/" + code; // chama o mÃ©todo detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
+	}
+
 
 	@GetMapping("/login")
 	public String carregaPaginaLogin() {
