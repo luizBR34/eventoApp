@@ -1,4 +1,4 @@
-package com.eventoApp.configs.security;
+/*package com.eventoApp.configs.security;
 
 import javax.transaction.Transactional;
 
@@ -35,3 +35,4 @@ public class ImplementsUserDetailsService implements UserDetailsService {
 		return new User(usuario.getUsername(), usuario.getPassword(), true, true, true, true, usuario.getAuthorities());
 	}
 }
+*/

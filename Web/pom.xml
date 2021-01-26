@@ -22,6 +22,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.eventoApp.configs</groupId>
+            <artifactId>configs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.eventoApp.models</groupId>
             <artifactId>models</artifactId>
             <version>${project.version}</version>
@@ -53,11 +58,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-		</dependency>		
+		
 <!-- 		<dependency>
 		    <groupId>com.sun.jersey</groupId>
 		    <artifactId>jersey-client</artifactId>

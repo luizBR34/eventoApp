@@ -20,6 +20,7 @@ import org.springframework.core.env.Environment;
 
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
+import com.eventoApp.models.Role;
 import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 
@@ -102,6 +103,21 @@ public class ClientServiceImpl implements ClientService {
 		log.info("END - ClientServiceImpl:seekUser()");
 		return user;
 	}
+	
+	
+	@Override
+	public void saveUser(User user) {
+		
+		log.info("START - ClientServiceImpl:saveUser()");
+
+		String topicExchangePrice = env.getProperty("name.topicexchange.assortment");
+		String routingKey = env.getProperty("name.routingKey.updates");
+
+		template.convertAndSend(topicExchangePrice, routingKey, user);
+
+		log.info("END - ClientServiceImpl:saveUser()");
+	}
+	
 
 	@Override
 	public List<Guest> listGuests(long eventCode) {
@@ -136,18 +152,20 @@ public class ClientServiceImpl implements ClientService {
 
 		template.convertAndSend(topicExchangePrice, routingKey, guest);
 
-		log.info("START - ClientServiceImpl:saveGuest()");
+		log.info("END - ClientServiceImpl:saveGuest()");
 	}
 
 	@Override
 	public void saveEvent(Event event) {
 
-		log.info("ClientServiceImpl:saveEvent()");
+		log.info("START - ClientServiceImpl:saveEvent()");
 
 		String topicExchangePrice = env.getProperty("name.topicexchange.assortment");
 		String routingKey = env.getProperty("name.routingKey.updates");
 
 		template.convertAndSend(topicExchangePrice, routingKey, event);
+		
+		log.info("END - ClientServiceImpl:saveEvent()");
 	}
 
 	@Override
@@ -183,5 +201,26 @@ public class ClientServiceImpl implements ClientService {
 
 		log.info("END - ClientServiceImpl:deleteGuest()");
 		return event;
+	}
+
+	@Override
+	public Role seekRoleByName(String theRoleName) {
+
+		log.info("START - ClientServiceImpl:seekRoleByName()");
+
+		String path = eventoCacheEndpointURI + "/seekRole/" + theRoleName;
+
+		ResponseEntity<Role> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null, Role.class);
+		Role role = null;
+
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("ClientServiceImpl:seekRoleByName() - EventoCache API responded the request successfully!");
+			role = responseEntity.getBody();
+		} else {
+			log.error("Error when request event's list from API!");
+		}
+
+		log.info("END - ClientServiceImpl:seekRoleByName()");
+		return role;
 	}
 }

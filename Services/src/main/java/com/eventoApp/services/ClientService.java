@@ -3,6 +3,7 @@ package com.eventoApp.services;
 import java.util.List;
 
 import com.eventoApp.models.Guest;
+import com.eventoApp.models.Role;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.User;
 
@@ -13,6 +14,10 @@ public interface ClientService {
 	public Event seekEvent(long code);
 
 	public User seekUser(String login);
+	
+	public void saveUser(User user);
+	
+	public Role seekRoleByName(String theRoleName);
 	
 	public List<Guest> listGuests(long eventCode);
 	

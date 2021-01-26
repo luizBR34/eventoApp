@@ -1,5 +1,7 @@
 package com.eventoApp.web;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,13 +16,16 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -34,6 +39,9 @@ public class EventAppController implements ErrorController {
 
 	@Autowired
 	private ClientService sr;
+	
+	@Autowired
+	private WebClient webClient;
 	
     @Autowired
     private SessionRegistry registroSecao;
@@ -170,7 +178,7 @@ public class EventAppController implements ErrorController {
 	
 
 	
-	@RequestMapping("/deletarConvidado")
+	@DeleteMapping("/deletarConvidado")
 	public String deleteGuest(long id) {
 		
 		Event event = sr.deleteGuest(id);
@@ -182,10 +190,25 @@ public class EventAppController implements ErrorController {
 	}
 
 
-	@GetMapping("/login")
+	
+/*	@GetMapping("/userlogin")
 	public String carregaPaginaLogin() {
-		return "login";
+		return "userlogin";
+	}*/
+	
+	
+	@GetMapping("/hello")
+	public String sayHello(Model model, @RequestParam(defaultValue = "Siva" ,required = false)String name) throws Exception, URISyntaxException {
+		
+		model.addAttribute("name", name);
+		
+		String response = webClient.get().uri(new URI("http://localhost:8084/hello")).retrieve().bodyToMono(String.class).block();
+		System.out.println(response);
+		
+		return "hello";
 	}
+	
+	
 	
 
 	@GetMapping(value = PATH)
@@ -209,7 +232,7 @@ public class EventAppController implements ErrorController {
 
         return "error";
     }
-    
+
 
     @Override
     public String getErrorPath() {

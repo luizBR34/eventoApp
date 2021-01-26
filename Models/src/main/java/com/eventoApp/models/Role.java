@@ -1,33 +1,17 @@
 package com.eventoApp.models;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 @ToString
-public class Role implements GrantedAuthority, Serializable {
+public class Role {
 	
-	private static final long serialVersionUID = 1L;
+	private Long id;
 
-	@JsonProperty("roleName")
-	private String roleName;
-	
-	@Getter(value = AccessLevel.NONE)
-	@Setter(value = AccessLevel.NONE)
-	private List<User> users;
-
-	@Override
-	public String getAuthority() {
-		return this.roleName;
-	}
+	private String name;
 }

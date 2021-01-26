@@ -49,7 +49,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>service</artifactId>
+				<artifactId>services</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -57,7 +57,7 @@
 				<artifactId>web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
+			
 		</dependencies>
 	</dependencyManagement>
 

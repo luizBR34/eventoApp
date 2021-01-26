@@ -12,11 +12,38 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+	
+	<properties>
+		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+	</properties>
 
 	<dependencies>
+	
+	<!-- MODULES DENPENDENCY START -->
+
+        <dependency>
+            <groupId>com.eventoApp.configs</groupId>
+            <artifactId>configs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.eventoApp.web</groupId>
+            <artifactId>web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+
+	<!-- MODULES DENPENDENCY END -->
+	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+		        <groupId>org.springframework.boot</groupId>
+		        <artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 		<dependency>
