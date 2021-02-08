@@ -66,11 +66,11 @@
 	
 	<tbody>
 	<tr th:each="event : ${events}">
-		<td><a th:href=" ${(#mvc.url('EC#eventDetail').arg(0, event.code)).build()}"><span th:text="${event.nome}"></span></a></td>
+		<td><a th:href=" ${(#mvc.url('EAC#eventDetail').arg(0, event.code)).build()}"><span th:text="${event.name}"></span></a></td>
 		<td><span th:text="${event.city}"></span></td>
 		<td><span th:text="${event.date}"></span></td>
 		<td><span th:text="${event.time}"></span></td>
-		<td><a class="waves-effect waves-light btn-small" th:href=" ${(#mvc.url('EC#deletarEvento').arg(0, event.code)).build()}"><i class="material-icons left">delete</i></a></td>
+		<td><a class="waves-effect waves-light btn-small" th:href=" ${(#mvc.url('EAC#deleteEvent').arg(0, event.code)).build()}"><i class="material-icons left">delete</i></a></td>
 	</tr>
 	</tbody>
 	

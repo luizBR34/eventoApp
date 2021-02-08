@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,27 +37,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationSuccessHandler oauth2authSuccessHandler;
 
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws java.lang.Exception {
-		auth.authenticationProvider(authenticationProvider());
-	}
-	
 
 	@Override
-	protected void configure(HttpSecurity http) throws java.lang.Exception {
+	protected void configure(HttpSecurity http) throws Exception {
 	
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/", "/login", "/h2-console/**", "/mylogin", "/verify/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/cadastrarEvento").hasRole("ADMIN") 
+		.antMatchers("/", "index", "/login", "/showMyLoginPage", "/h2-console/**", "/verify/**").permitAll()
+/*		.antMatchers(HttpMethod.GET, "/cadastrarEvento").hasRole("ADMIN") 
 		.antMatchers(HttpMethod.POST, "/cadastrarEvento").hasRole("ADMIN")
 		.antMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN", "USER")
 		.antMatchers(HttpMethod.GET, "/deletarEvento").hasRole("ADMIN")
-		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasAnyRole("ADMIN", "USER")
+		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasAnyRole("ADMIN", "USER")*/
 		.anyRequest().authenticated()
 
 		.and()
 		.formLogin()
-				.loginPage("/login")
+				.loginPage("/showMyLoginPage")
 				//.loginProcessingUrl("/authenticateUser")
 				.successHandler(oauth2authSuccessHandler)
 				.failureUrl("/login?error=true")
@@ -67,11 +63,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrf().disable().rememberMe().key("myremembermekey")	
 		.and()
 		.logout()
+				.logoutUrl("/logout")
 				.logoutSuccessUrl("/").deleteCookies("remember-me")  // after logout redirect to landing page (root)
 				//.permitAll()
-/*		.and()
+		.and()
 				.exceptionHandling()
-				.accessDeniedPage("/access-denied")*/
+				.accessDeniedPage("/access-denied")
 				
 		.and()
 		.oauth2Login()
@@ -93,20 +90,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/materialize/**", "/style/**", "/images/**");
 	}
 	
-
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws java.lang.Exception {
+		auth.authenticationProvider(authenticationProvider());
+	}
+	
 
 	//authenticationProvider bean definition
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
 		auth.setUserDetailsService(userService); //set the custom user details service
-		auth.setPasswordEncoder(getPasswordEncoder()); //set the password encoder - bcrypt
+		auth.setPasswordEncoder(passwordEncoder()); //set the password encoder - bcrypt
 		return auth;
 	}
 	
 	@Bean
-	public PasswordEncoder getPasswordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		DelegatingPasswordEncoder encoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
 		return encoder;
 	}
+	
 }

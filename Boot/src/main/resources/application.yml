@@ -10,10 +10,10 @@ server:
       cookie:
         path: /myapp
   ssl:
-    key-store-password: ${keystorepassword}
+    key-store-password: ${sslpassword}
     key-store: classpath:eventoappstore.p12
     key-store-type: PKCS12
-    key-alias: tomcat
+    key-alias: eventoapp
   error:
     whitelabel:
       enabled: "false"

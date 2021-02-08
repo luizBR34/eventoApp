@@ -2,8 +2,8 @@ package com.eventoApp.web;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,24 +43,39 @@ public class EventAppController implements ErrorController {
 	@Autowired
 	private WebClient webClient;
 	
-    @Autowired
-    private SessionRegistry registroSecao;
-	
 	private Logger log = LoggerFactory.getLogger(EventAppController.class);
 	
 	private static final String PATH = "/error";
 	
 
 	@GetMapping("/")
-	public String index() {
+	public ModelAndView index() {
 		log.info("EventoController:index()");
-		return "redirect:/eventos";
+		return new ModelAndView("forward:/eventos");
 	}
 	
 	
+	@GetMapping("/showMyLoginPage")
+	public ModelAndView loginPage() {
+		ModelAndView loginPage = new ModelAndView("login");
+		return loginPage;
+	}
+	
+	
+	
+	// add request mapping for /access-denied
+	@GetMapping("/access-denied")
+	public String showAccessDenied() {
+		return "proibido";
+	}
+	
+	
+	
+
 	@GetMapping(value="/cadastrarEvento")
-	public String form() {
-		return "evento/formEvento";
+	public ModelAndView form() {
+		//return "evento/formEvento";
+		return new ModelAndView("evento/formEvento");
 	}
 
 	
@@ -88,25 +103,28 @@ public class EventAppController implements ErrorController {
 		
 		ModelAndView mv = new ModelAndView("index");
 		
-		List<Event> list = sr.listEvents();
+		//List<Event> list = sr.listEvents();
 		
-		verifyRequestedObject("listEvents()", list);
+		Event teste = new Event();
+		teste.setCity("São Paulo");
+		teste.setCode(11);
+		teste.setName("Luiz");
+		
+		List<Event> list = Arrays.asList(teste);
 		
 		mv.addObject("events", list);
 		
-		List<String> usuarios = recuperaUsuariosLogados();
+		String usuario = getLoggedinUserName();
 		
-			if (!usuarios.isEmpty()) {
-				mv.addObject("usuario", usuarios.get(0));
-				log.info("EventoController:listaEventos() - USUARIO LOGADO: " + usuarios.get(0));
+			if (!usuario.equals("")) {
+				mv.addObject("usuario", usuario);
+				log.info("EventoController:listaEventos() - USUARIO LOGADO: " + usuario);
 
 			} else {
 				mv.addObject("usuario", "visitante");
 				log.info("EventoController:listaEventos() - NENHUM USUARIO LOGADO!");
 			}
 			
-		usuarios.clear();
-		
 		log.info("END - EventAppController:listEvents()");
 		return mv;
 	}
@@ -114,11 +132,14 @@ public class EventAppController implements ErrorController {
 	
 	
 	
-	public List<String> recuperaUsuariosLogados() {
-	    return registroSecao.getAllPrincipals().stream()
-	    									   .filter(u -> !registroSecao.getAllSessions(u, false).isEmpty())
-	    									   .map(u -> User.class.cast(u).getUsername())
-	    									   .collect(Collectors.toList());
+	private String getLoggedinUserName() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		if (principal instanceof UserDetails) {
+			return ((UserDetails) principal).getUsername();
+		}
+		
+		return principal.toString();
 	}
 	
 	
@@ -132,14 +153,10 @@ public class EventAppController implements ErrorController {
 		
 		Event soughtEvent = sr.seekEvent(code);
 		
-		verifyRequestedObject("eventDetail()", soughtEvent);
-		
 		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
 		mv.addObject("event", soughtEvent);
 		
 		List<Guest> guests = sr.listGuests(soughtEvent.getCode());
-		
-		verifyRequestedObject("eventDetail()", guests);
 		
 		mv.addObject("convidados", guests);
 		
@@ -169,17 +186,17 @@ public class EventAppController implements ErrorController {
 	}
 	
 
-	@DeleteMapping("/deletarEvento")
-	public String deletarEvento(long code) {
+	@DeleteMapping("/{code}")
+	public ModelAndView deleteEvent(@PathVariable("code") long code) {
 		
 		sr.deleteEvent(code);
-		return "redirect:/eventos"; 
+		return new ModelAndView("forward:/eventos");
 	}
 	
 
 	
-	@DeleteMapping("/deletarConvidado")
-	public String deleteGuest(long id) {
+	@DeleteMapping("/deleteGuest/{id}")
+	public String deleteGuest(@PathVariable("id")long id) {
 		
 		Event event = sr.deleteGuest(id);
 		
@@ -190,13 +207,6 @@ public class EventAppController implements ErrorController {
 	}
 
 
-	
-/*	@GetMapping("/userlogin")
-	public String carregaPaginaLogin() {
-		return "userlogin";
-	}*/
-	
-	
 	@GetMapping("/hello")
 	public String sayHello(Model model, @RequestParam(defaultValue = "Siva" ,required = false)String name) throws Exception, URISyntaxException {
 		
@@ -212,7 +222,7 @@ public class EventAppController implements ErrorController {
 	
 
 	@GetMapping(value = PATH)
-    public String manipulaError(HttpServletRequest request) {
+    public ModelAndView manipulaError(HttpServletRequest request) {
 
     	Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
@@ -220,17 +230,17 @@ public class EventAppController implements ErrorController {
             Integer statusCode = Integer.valueOf(status.toString());
          
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
-                return "perdido";
+            	return new ModelAndView("perdido");
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                return "error";
+            	return new ModelAndView("error");
                 
             } else if(statusCode == HttpStatus.FORBIDDEN.value()) {
-            	return "proibido";
+            	return new ModelAndView("proibido");
             }
         }
 
-        return "error";
+        return new ModelAndView("error");
     }
 
 
@@ -238,14 +248,5 @@ public class EventAppController implements ErrorController {
     public String getErrorPath() {
         return PATH;
     }
-    
-    
-	public void verifyRequestedObject(String methodName, Object o) {
-		if (o != null) {
-			log.info("EventAppController:" + methodName + "." + o.getClass().getName() + " was succefully created!");
-		} else {
-			log.error("ERROR: " + "EventAppController:" + methodName);
-		}
-	}
-    
+
 }

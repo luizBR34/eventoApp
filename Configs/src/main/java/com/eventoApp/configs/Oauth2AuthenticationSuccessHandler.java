@@ -20,19 +20,20 @@ import com.eventoApp.models.CrmUser;
 import com.eventoApp.services.UserService;
 
 @Component("oauth2authSuccessHandler")
-public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler{
+public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	private  RedirectStrategy redirectStrategy =  new DefaultRedirectStrategy();
+	//private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@Autowired
 	private UserService service;
 	
 	@Autowired
-	private  PasswordEncoder encoder;
-	 
+	private PasswordEncoder passwordEncoder;
+
+	
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws IOException, ServletException {
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
+			throws IOException, ServletException {
 		
 		OAuth2AuthenticationToken oToken = (OAuth2AuthenticationToken) authentication;
 		
@@ -46,8 +47,8 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 			
 			CrmUser user = new CrmUser();
 			user.setUserName("admin");
-			user.setPassword(encoder.encode("secret"));
-			user.setMatchingPassword(encoder.encode("secret"));
+			user.setPassword(passwordEncoder.encode("secret"));
+			user.setMatchingPassword(passwordEncoder.encode("secret"));
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
 			user.setEmail(email);
@@ -60,9 +61,9 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 			session.setAttribute("user", userFound);
 		}
 
-		this.redirectStrategy.sendRedirect(request, response, "/hello");
+		//this.redirectStrategy.sendRedirect(request, response, "/hello");
 		
 		// forward to home page
-		//response.sendRedirect(request.getContextPath() + "/");
+		response.sendRedirect(request.getContextPath() + "/");
 	}
 }
