@@ -65,8 +65,8 @@ public class EventAppController implements ErrorController {
 	
 	// add request mapping for /access-denied
 	@GetMapping("/access-denied")
-	public String showAccessDenied() {
-		return "proibido";
+	public ModelAndView showAccessDenied() {
+		return new ModelAndView("proibido");
 	}
 	
 	
@@ -74,7 +74,6 @@ public class EventAppController implements ErrorController {
 
 	@GetMapping(value="/cadastrarEvento")
 	public ModelAndView form() {
-		//return "evento/formEvento";
 		return new ModelAndView("evento/formEvento");
 	}
 
@@ -146,7 +145,7 @@ public class EventAppController implements ErrorController {
 
 
 	//Called when click a specific event
-	@GetMapping(value="/{codigo}")
+	@GetMapping(value="/eventDetail/{code}")
 	public ModelAndView eventDetail(@PathVariable("code") long code) {
 		
 		log.info("START - EventAppController:eventDetail()");
@@ -156,9 +155,9 @@ public class EventAppController implements ErrorController {
 		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
 		mv.addObject("event", soughtEvent);
 		
-		List<Guest> guests = sr.listGuests(soughtEvent.getCode());
+		List<Guest> guests = sr.guestList(soughtEvent.getCode());
 		
-		mv.addObject("convidados", guests);
+		mv.addObject("guests", guests);
 		
 		log.info("END - EventAppController:eventDetail()");
 		return mv;
@@ -169,7 +168,7 @@ public class EventAppController implements ErrorController {
 
 	
 	//Chamado ao cadastrar um convidado na pÃ¡gina detalhesEvento.html
-	@PostMapping(value="/{eventCode}")
+	@PostMapping(value="/saveGuest/{eventCode}")
 	public String saveGuest(@PathVariable("eventCode") long eventCode, @Valid Guest guest, BindingResult result, RedirectAttributes attributes) {
 		
 		log.info("EventoController:saveGuest()");
@@ -186,7 +185,7 @@ public class EventAppController implements ErrorController {
 	}
 	
 
-	@DeleteMapping("/{code}")
+	@DeleteMapping("/deleteEvent/{code}")
 	public ModelAndView deleteEvent(@PathVariable("code") long code) {
 		
 		sr.deleteEvent(code);
@@ -213,7 +212,7 @@ public class EventAppController implements ErrorController {
 		model.addAttribute("name", name);
 		
 		String response = webClient.get().uri(new URI("http://localhost:8084/hello")).retrieve().bodyToMono(String.class).block();
-		System.out.println(response);
+		System.out.println("RESPOSTA DO RESOURCE SERVER: {}" + response);
 		
 		return "hello";
 	}

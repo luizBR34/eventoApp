@@ -29,7 +29,7 @@
 	<th:block th:include="mensagemValidacao"></th:block>
 
 	<div class="container formEvento">
-		<form class="container" method="post">
+		<form class="container" th:action="@{/cadastrarEvento}" method="post">
 			<p th:text="#{coluna.Nome}"/>
 			<input type="text" value="" name="nome"/>
 			

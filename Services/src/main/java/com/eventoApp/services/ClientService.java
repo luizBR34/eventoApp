@@ -9,7 +9,7 @@ import com.eventoApp.models.User;
 
 public interface ClientService {
 	
-	public List<Event> listEvents();
+	public List<Event> eventList();
 	
 	public Event seekEvent(long code);
 
@@ -19,7 +19,7 @@ public interface ClientService {
 	
 	public Role seekRoleByName(String theRoleName);
 	
-	public List<Guest> listGuests(long eventCode);
+	public List<Guest> guestList(long eventCode);
 	
 	public void saveGuest(long eventCode, Guest guest);
 	

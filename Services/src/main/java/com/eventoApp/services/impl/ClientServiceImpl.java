@@ -42,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
 	RestTemplate restTemplate = new RestTemplate();
 
 	@Override
-	public List<Event> listEvents() {
+	public List<Event> eventList() {
 
 		log.info("START - ClientServiceImpl:listEvents()");
 
@@ -120,7 +120,7 @@ public class ClientServiceImpl implements ClientService {
 	
 
 	@Override
-	public List<Guest> listGuests(long eventCode) {
+	public List<Guest> guestList(long eventCode) {
 
 		log.info("START - ClientServiceImpl:listGuests()");
 

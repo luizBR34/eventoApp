@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,8 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private Logger log = LoggerFactory.getLogger(Oauth2AuthenticationSuccessHandler.class);
 
 	
 	@Override
@@ -36,6 +40,8 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 			throws IOException, ServletException {
 		
 		OAuth2AuthenticationToken oToken = (OAuth2AuthenticationToken) authentication;
+		
+		log.info("Username: {}" + authentication.getName());
 		
 		com.eventoApp.models.User userFound = service.findByUserName(authentication.getName());
 		
