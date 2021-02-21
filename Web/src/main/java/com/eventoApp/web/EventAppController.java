@@ -2,7 +2,6 @@ package com.eventoApp.web;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -12,10 +11,10 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +28,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.eventoApp.configs.Oauth2AuthenticationSuccessHandler;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
 import com.eventoApp.services.ClientService;
@@ -42,6 +42,10 @@ public class EventAppController implements ErrorController {
 	
 	@Autowired
 	private WebClient webClient;
+	
+	@Autowired
+	@Qualifier("oauth2authSuccessHandler")
+	private Oauth2AuthenticationSuccessHandler authenticationHandler;
 	
 	private Logger log = LoggerFactory.getLogger(EventAppController.class);
 	
@@ -102,18 +106,11 @@ public class EventAppController implements ErrorController {
 		
 		ModelAndView mv = new ModelAndView("index");
 		
-		//List<Event> list = sr.listEvents();
-		
-		Event teste = new Event();
-		teste.setCity("São Paulo");
-		teste.setCode(11);
-		teste.setName("Luiz");
-		
-		List<Event> list = Arrays.asList(teste);
+		List<Event> list = sr.eventList();
 		
 		mv.addObject("events", list);
 		
-		String usuario = getLoggedinUserName();
+		String usuario = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication());
 		
 			if (!usuario.equals("")) {
 				mv.addObject("usuario", usuario);
@@ -127,20 +124,6 @@ public class EventAppController implements ErrorController {
 		log.info("END - EventAppController:listEvents()");
 		return mv;
 	}
-	
-	
-	
-	
-	private String getLoggedinUserName() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		if (principal instanceof UserDetails) {
-			return ((UserDetails) principal).getUsername();
-		}
-		
-		return principal.toString();
-	}
-	
 	
 
 

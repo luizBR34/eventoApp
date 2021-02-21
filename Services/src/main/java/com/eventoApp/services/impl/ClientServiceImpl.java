@@ -44,7 +44,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public List<Event> eventList() {
 
-		log.info("START - ClientServiceImpl:listEvents()");
+		log.info("START - ClientServiceImpl:eventList()");
 
 		ResponseEntity<List<Event>> responseEntity = restTemplate.exchange(eventoCacheEndpointURI, HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<Event>>() {
@@ -58,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
 			log.error("Error when request event's list from API!");
 		}
 
-		log.info("END - ClientServiceImpl:listEvents()");
+		log.info("END - ClientServiceImpl:eventList()");
 		return listOfEvents;
 	}
 
