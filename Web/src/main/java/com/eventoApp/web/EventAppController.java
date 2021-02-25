@@ -55,7 +55,7 @@ public class EventAppController implements ErrorController {
 	@GetMapping("/")
 	public ModelAndView index() {
 		log.info("EventoController:index()");
-		return new ModelAndView("forward:/eventos");
+		return new ModelAndView("forward:/events");
 	}
 	
 	
@@ -76,30 +76,28 @@ public class EventAppController implements ErrorController {
 	
 	
 
-	@GetMapping(value="/cadastrarEvento")
+	@GetMapping(value="/saveEvent")
 	public ModelAndView form() {
 		return new ModelAndView("evento/formEvento");
 	}
 
-	
-	//MÃ©todo chamado pelo form da pÃ¡gina formEvento.html
-	@PostMapping(value="/cadastrarEvento")
-	public String form(@Valid Event evento, BindingResult result, RedirectAttributes attributes) {
+
+	@PostMapping(value="/saveEvent")
+	public ModelAndView form(@Valid Event event, BindingResult result, RedirectAttributes attributes) {
 		
 			//Se ocorrer um erro no input de dados, uma mensagem Ã© exibida para o usuÃ¡rio
 			if (result.hasErrors()) {
 				attributes.addFlashAttribute("mensagem", "Verifique os campos!");
-				return "redirect:cadastrarEvento";
+			} else {
+				sr.saveEvent(event);
+				attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
 			}
 
-		sr.saveEvent(evento);
-		
-		attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
-		return "redirect:cadastrarEvento";
+		return new ModelAndView("evento/formEvento");
 	}
 	
 	
-	@GetMapping("/eventos")
+	@GetMapping("/events")
 	public ModelAndView listEvents() {
 
 		log.info("START - EventAppController:listEvents()");
@@ -150,7 +148,6 @@ public class EventAppController implements ErrorController {
 
 
 	
-	//Chamado ao cadastrar um convidado na pÃ¡gina detalhesEvento.html
 	@PostMapping(value="/saveGuest/{eventCode}")
 	public String saveGuest(@PathVariable("eventCode") long eventCode, @Valid Guest guest, BindingResult result, RedirectAttributes attributes) {
 		

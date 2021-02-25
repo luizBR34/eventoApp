@@ -2,9 +2,12 @@ package com.eventoApp.models;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.eventoApp.mappers.utils.DateUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Getter
@@ -19,6 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class Event implements Serializable {
 	
 	private static final long serialVersionUID = 4965925525811003013L;
@@ -29,14 +34,9 @@ public class Event implements Serializable {
 
 	private String city;
 
-	private Date date;
+	private String date;
 
-	private Time time;
-
-	@Override
-	public String toString() {
-		return "Event [code=" + code + ", name=" + name + ", city=" + city + ", date=" + DateUtils.formatDate(date) + ", time=" + time + "]";
-	}
+	private String time;
 }
 
 

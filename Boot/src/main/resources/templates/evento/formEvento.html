@@ -20,7 +20,7 @@
 	    <div class="nav-wrapper">
 	      <a href="#" class="brand-logo" th:text="#{cadastro.Evento.Titulo}"></a>
 	      <ul id="nav-mobile" class="right hide-on-med-and-down">
-	        <li><a href="/eventos" class="waves-effect waves-light btn" th:text="#{botao.Listar.Eventos}"><i class="material-icons left">format_list_bulleted</i></a></li>
+	        <li><a href="/myapp/events" class="waves-effect waves-light btn" th:text="#{botao.Listar.Eventos}"><i class="material-icons left">format_list_bulleted</i></a></li>
 	      </ul>
 	    </div>
 	  </nav>
@@ -29,24 +29,24 @@
 	<th:block th:include="mensagemValidacao"></th:block>
 
 	<div class="container formEvento">
-		<form class="container" th:action="@{/cadastrarEvento}" method="post">
+		<form class="container" th:action="@{/saveEvent}" method="post">
 			<p th:text="#{coluna.Nome}"/>
-			<input type="text" value="" name="nome"/>
+			<input type="text" value="" name="name"/>
 			
 			<div class="row">
 				<div class="input-field col s6">
 					<p th:text="#{coluna.Local}"/>
-					<input type="text" value="" name="local"/>
+					<input type="text" value="" name="city"/>
 				</div>
 				
 				<div class="input-field col s3"> 
 					<p th:text="#{coluna.Data}"/>
-					<input type="date" value="" name="data"/> 
+					<input type="date" value="" name="date"/> 
 				</div>
 		
 				<div class="input-field col s3"> 
 					<p th:text="#{coluna.Horario}"/>
-					<input type="time" value="" name="horario"/>
+					<input type="time" value="" name="time"/>
 				</div>
 			</div>
 			<button class="waves-effect waves-light btn" th:text="#{botao.Salvar}" type="submit"></button>
