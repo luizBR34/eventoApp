@@ -25,9 +25,9 @@ import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 
 @Service
-public class ClientServiceImpl implements ClientService {
+public class DefaultClientService implements ClientService {
 
-	private Logger log = LoggerFactory.getLogger(ClientServiceImpl.class);
+	private Logger log = LoggerFactory.getLogger(DefaultClientService.class);
 
 	@Autowired
 	@Qualifier("template")
