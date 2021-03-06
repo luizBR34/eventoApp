@@ -73,9 +73,9 @@ spring:
              
 name:
   topicexchange:
-    assortment: assortment-integration-exchange
+    eventoapp: eventoapp.integration.exchange
   routingKey:
-    assortment: routingKey_James_Assortment
+    eventoapp: routingKey_eventoapp
 
     
     

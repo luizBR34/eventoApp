@@ -110,10 +110,10 @@ public class DefaultClientService implements ClientService {
 		
 		log.info("START - ClientServiceImpl:saveUser()");
 
-		String topicExchangePrice = env.getProperty("name.topicexchange.assortment");
-		String routingKey = env.getProperty("name.routingKey.updates");
+		String topicExchangeBroker = env.getProperty("name.topicexchange.eventoapp");
+		String routingKey = env.getProperty("name.routingKey.eventoapp");
 
-		template.convertAndSend(topicExchangePrice, routingKey, user);
+		template.convertAndSend(topicExchangeBroker, routingKey, user);
 
 		log.info("END - ClientServiceImpl:saveUser()");
 	}
