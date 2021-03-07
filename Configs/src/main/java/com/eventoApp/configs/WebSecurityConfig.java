@@ -107,11 +107,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.setPasswordEncoder(encoder); //set the password encoder - bcrypt
 		return auth;
 	}
-	
-/*	@Bean
-	public PasswordEncoder passwordEncoder() {
-		DelegatingPasswordEncoder encoder = (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		return encoder;
-	}*/
-	
 }
