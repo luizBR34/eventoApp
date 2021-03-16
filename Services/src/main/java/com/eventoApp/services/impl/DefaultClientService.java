@@ -1,8 +1,6 @@
 package com.eventoApp.services.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,14 +8,12 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.core.env.Environment;
 
+import com.eventoApp.clients.EventoAppFeignClient;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
 import com.eventoApp.models.Role;
@@ -39,16 +35,15 @@ public class DefaultClientService implements ClientService {
 	@Value(value = "${eventocache.endpoint.uri}")
 	private String eventoCacheEndpointURI;
 
-	RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private EventoAppFeignClient client;
 
 	@Override
 	public List<Event> eventList() {
 
 		log.info("START - DefaultClientService:eventList()");
 
-		ResponseEntity<List<Event>> responseEntity = restTemplate.exchange(eventoCacheEndpointURI, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<Event>>() {
-				});
+		ResponseEntity<List<Event>> responseEntity = client.eventList();
 		List<Event> listOfEvents = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -67,9 +62,7 @@ public class DefaultClientService implements ClientService {
 
 		log.info("START - DefaultClientService:searchEvent()");
 
-		String path = eventoCacheEndpointURI + "/searchEvent/" + String.valueOf(code);
-
-		ResponseEntity<Event> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null, Event.class);
+		ResponseEntity<Event> responseEntity = client.seekEvent(code);
 		Event event = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -88,9 +81,7 @@ public class DefaultClientService implements ClientService {
 
 		log.info("START - DefaultClientService:seekUser()");
 
-		String path = eventoCacheEndpointURI + "/seekUser/" + login;
-
-		ResponseEntity<User> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null, User.class);
+		ResponseEntity<User> responseEntity = client.seekUser(login);
 		User user = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -124,11 +115,7 @@ public class DefaultClientService implements ClientService {
 
 		log.info("START - DefaultClientService:listGuests()");
 
-		String path = eventoCacheEndpointURI + "/listGuests/" + String.valueOf(eventCode);
-
-		ResponseEntity<List<Guest>> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<Guest>>() {
-				});
+		ResponseEntity<List<Guest>> responseEntity = client.guestList(eventCode);
 		List<Guest> guestList = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -172,13 +159,8 @@ public class DefaultClientService implements ClientService {
 	public void deleteEvent(long code) {
 
 		log.info("START - DefaultClientService:deleteEvent()");
-
-		String path = eventoCacheEndpointURI + "/deletaEvento/" + String.valueOf(code);
-
-		Map<String, Long> params = new HashMap<String, Long>();
-		params.put("code", code);
-
-		restTemplate.delete(path, params);
+		
+		client.deleteEvent(code);
 
 		log.info("END - DefaultClientService:deleteEvent()");
 	}
@@ -187,9 +169,7 @@ public class DefaultClientService implements ClientService {
 
 		log.info("START - DefaultClientService:deleteGuest()");
 
-		String path = eventoCacheEndpointURI + "/deletaConvidado/" + String.valueOf(id);
-
-		ResponseEntity<Event> responseEntity = restTemplate.exchange(path, HttpMethod.DELETE, null, Event.class);
+		ResponseEntity<Event> responseEntity = client.deleteGuest(id);
 		Event event = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -208,9 +188,7 @@ public class DefaultClientService implements ClientService {
 
 		log.info("START - DefaultClientService:seekRoleByName()");
 
-		String path = eventoCacheEndpointURI + "/seekRole/" + theRoleName;
-
-		ResponseEntity<Role> responseEntity = restTemplate.exchange(path, HttpMethod.GET, null, Role.class);
+		ResponseEntity<Role> responseEntity = client.seekRoleByName(theRoleName);
 		Role role = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {

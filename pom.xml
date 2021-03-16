@@ -35,6 +35,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>clients</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>configs</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -64,6 +69,7 @@
 
 			<modules>
 				<module>boot</module>
+				<module>clients</module>
 				<module>configs</module>
 				<module>mappers</module>
 				<module>models</module>

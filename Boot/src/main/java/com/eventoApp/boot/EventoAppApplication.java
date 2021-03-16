@@ -10,11 +10,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
+@EnableFeignClients("com.eventoApp.clients")
 @ComponentScan("com.eventoApp")
 public class EventoAppApplication extends SpringBootServletInitializer {
 
