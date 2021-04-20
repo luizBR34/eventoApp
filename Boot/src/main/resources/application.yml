@@ -1,7 +1,10 @@
 logging:
   level:
     org.springframework.security: DEBUG
-
+    
+security:
+  require-ssl: true
+    
 server:
   port: 8443  
   servlet:
@@ -76,9 +79,3 @@ name:
     eventoapp: eventoapp.integration.exchange
   routingKey:
     eventoapp: routingKey_eventoapp
-
-    
-    
-    
-    
-

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +13,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -25,7 +23,7 @@ import com.eventoApp.services.UserService;
 @EnableWebSecurity
 @Order(1)
 @EnableOAuth2Client
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private UserService userService;
@@ -42,48 +40,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-	
-		http.authorizeRequests()
-		.antMatchers("/", "index", "/login", "/showMyLoginPage", "/logout", "/access-denied", "/h2-console/**", "/verify/**").permitAll()
-/*		.antMatchers(HttpMethod.GET, "/cadastrarEvento").hasRole("ADMIN") 
-		.antMatchers(HttpMethod.POST, "/cadastrarEvento").hasRole("ADMIN")
-		.antMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN", "USER")
-		.antMatchers(HttpMethod.GET, "/deletarEvento").hasRole("ADMIN")
-		.antMatchers(HttpMethod.GET, "/deletarConvidado").hasAnyRole("ADMIN", "USER")*/
-		.anyRequest().authenticated()
 
+		http.csrf().disable()
+		.authorizeRequests().antMatchers(HttpMethod.GET, "/").anonymous()
+        .antMatchers(HttpMethod.GET, "/events/*", "/loggedUser", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
+        .antMatchers(HttpMethod.POST, "/logar/*").permitAll()
+        .anyRequest().authenticated()
+        
 		.and()
-		.formLogin()
-				.loginPage("/login")
-				//.loginProcessingUrl("/authenticateUser")
+			.formLogin()
+				.loginPage("http://localhost:4200/eventos?login=true")
+				.loginProcessingUrl("/logar/*")
 				.successHandler(oauth2authSuccessHandler)
-				//.failureUrl("/login?error=true")
-				//.permitAll()
-				
-		//NOvo		
-		.and()
-				.csrf().disable().rememberMe().key("myremembermekey")	
-		.and()
-		.logout()
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/").deleteCookies("remember-me")  // after logout redirect to landing page (root)
-				//.permitAll()
-		.and()
-				.exceptionHandling()
-				.accessDeniedPage("/access-denied")
-				
-		.and()
+				.defaultSuccessUrl("http://localhost:4200", true)
+	
+        .and()
 		.oauth2Login()
-			.loginPage("/login")
-			.successHandler(oauth2authSuccessHandler);
-
-			//.authorizationEndpoint()
-			//.baseUri("/userlogin/oauth2/authorization");
-
+			.loginPage("http://localhost:4200/eventos?login=true")
+			.successHandler(oauth2authSuccessHandler)
+			
+		.and()
+			.rememberMe().key("myremembermekey")	
+		.and()
+			.logout()
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/").deleteCookies("remember-me")
+				
+		.and()
+			.exceptionHandling()
+			.accessDeniedPage("/access-denied");
+		
 		http.headers().frameOptions().disable();
 	}
-
-
 	
 	
 	//Define a autenticação de páginas estáticas (não bloquear style)

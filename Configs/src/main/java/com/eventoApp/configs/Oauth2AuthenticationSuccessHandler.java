@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import reactor.core.publisher.Mono;
+
 @Component("oauth2authSuccessHandler")
 public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	
@@ -27,18 +29,18 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
 			throws IOException, ServletException {
 		
-		String userName = getLoggedUserName(authentication);
+		String userName = getLoggedUserName(authentication).block();
 		log.info("Username: " + userName);
 
 		HttpSession session = request.getSession();
 		session.setAttribute("user", userName);
 
 		// forward to home page
-		response.sendRedirect(request.getContextPath() + "/");
+		response.sendRedirect(request.getContextPath() + "http://localhost:4200");
 	}
 	
 	
-	public String getLoggedUserName(Authentication authentication) {
+	public Mono<String> getLoggedUserName(Authentication authentication) {
 		
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		
@@ -54,9 +56,9 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 		} else {
 			
 			attributes.put("username", "Visitor");
-			
 		}
 		
-		return attributes.get("username").toString();
+		Mono<String> user = Mono.just(attributes.get("username").toString());
+		return user;
 	}
 }

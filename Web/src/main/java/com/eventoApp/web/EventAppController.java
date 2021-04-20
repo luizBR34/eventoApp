@@ -16,22 +16,25 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.eventoApp.configs.Oauth2AuthenticationSuccessHandler;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
 import com.eventoApp.services.ClientService;
+
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping
@@ -51,20 +54,25 @@ public class EventAppController implements ErrorController {
 	
 	private static final String PATH = "/error";
 	
+	
+	
+	
+	@GetMapping("/loggedUser")
+	public Mono<String> recuperaUsuarioLogado() {
+		
+		Mono<String> loggedUserMono = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication());
+		
+		String loggedUser = loggedUserMono.block();
+		
+		if (!loggedUser.equals("")) {
+			log.info("EventAppController:recuperaUsuarioLogado() - USUARIO LOGADO: " + loggedUser);
 
-	@GetMapping("/")
-	public ModelAndView index() {
-		log.info("EventoController:index()");
-		return new ModelAndView("forward:/events");
+		} else {
+			log.info("EventAppController:recuperaUsuarioLogado() - NENHUM USUARIO LOGADO!");
+		}
+
+		return loggedUserMono;
 	}
-	
-	
-	@GetMapping("/showMyLoginPage")
-	public ModelAndView loginPage() {
-		ModelAndView loginPage = new ModelAndView("login");
-		return loginPage;
-	}
-	
 	
 	
 	// add request mapping for /access-denied
@@ -73,103 +81,89 @@ public class EventAppController implements ErrorController {
 		return new ModelAndView("proibido");
 	}
 	
-	
-	
 
-	@GetMapping(value="/saveEvent")
+
+/*	@GetMapping(value="/saveEvent")
 	public ModelAndView form() {
 		return new ModelAndView("evento/formEvento");
+	}*/
+	
+	
+	@GetMapping(value="/saveEvent")
+	public RedirectView saveEventForm() {
+		
+		log.info("EventAppController:formCadastrarEvento()");
+	    RedirectView redirect = new RedirectView();
+	    redirect.setUrl("http://localhost:4200/cadastrarEvento");
+	    return redirect;
 	}
-
-
+	
+	
+	
 	@PostMapping(value="/saveEvent")
-	public ModelAndView form(@Valid Event event, BindingResult result, RedirectAttributes attributes) {
+	public void saveEvent(@RequestBody @Valid Event event) {
 		
-			//Se ocorrer um erro no input de dados, uma mensagem Ã© exibida para o usuÃ¡rio
-			if (result.hasErrors()) {
-				attributes.addFlashAttribute("mensagem", "Verifique os campos!");
-			} else {
-				sr.saveEvent(event);
-				attributes.addFlashAttribute("mensagem", "Evento cadastrado com sucesso!");
-			}
-
-		return new ModelAndView("evento/formEvento");
+		sr.saveEvent(event);
 	}
 	
+
 	
-	@GetMapping("/events")
-	public ModelAndView listEvents() {
+	@GetMapping(value="/events", produces="application/json")
+	public @ResponseBody List<Event> getEventList() {
+		
+		log.info("EventAppController:getEventList()");
+		
+/*		Event um = new Event(1, "Casamento do Fulano", "S�o PAulo", "12/04/2021", "11:00");
+		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
+		List<Event> eventList = Arrays.asList(um, dois);*/
 
-		log.info("START - EventAppController:listEvents()");
-		
-		ModelAndView mv = new ModelAndView("index");
-		
-		List<Event> list = sr.eventList();
-		
-		mv.addObject("events", list);
-		
-		String usuario = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication());
-		
-			if (!usuario.equals("")) {
-				mv.addObject("usuario", usuario);
-				log.info("EventoController:listaEventos() - USUARIO LOGADO: " + usuario);
+        List<Event> eventList = sr.eventList();
 
-			} else {
-				mv.addObject("usuario", "visitante");
-				log.info("EventoController:listaEventos() - NENHUM USUARIO LOGADO!");
-			}
-			
-		log.info("END - EventAppController:listEvents()");
-		return mv;
+		return eventList;
 	}
 	
 
 
-	//Called when click a specific event
-	@GetMapping(value="/eventDetail/{code}")
-	public ModelAndView eventDetail(@PathVariable("code") long code) {
+	@GetMapping(value="/seekEvent/{code}", produces="application/json")
+	public @ResponseBody Event seekEvent(@PathVariable("code") long code) {
 		
-		log.info("START - EventAppController:eventDetail()");
+		log.info("START - EventAppController:seekEvent()");
 		
 		Event soughtEvent = sr.seekEvent(code);
 		
-		ModelAndView mv = new ModelAndView("evento/detalhesEvento");
-		mv.addObject("event", soughtEvent);
+		log.info(soughtEvent + "/n" + "END - EventAppController:seekEvent()");
 		
-		List<Guest> guests = sr.guestList(soughtEvent.getCode());
-		
-		mv.addObject("guests", guests);
-		
-		log.info("END - EventAppController:eventDetail()");
-		return mv;
+		return soughtEvent;
 	}
 	
 	
-
-
 	
-	@PostMapping(value="/saveGuest/{eventCode}")
-	public String saveGuest(@PathVariable("eventCode") long eventCode, @Valid Guest guest, BindingResult result, RedirectAttributes attributes) {
+	
+	@GetMapping(value="/guestList/{eventCode}", produces="application/json")
+	public @ResponseBody List<Guest> guestList(@PathVariable("eventCode") long eventCode) {
 		
-		log.info("EventoController:saveGuest()");
+		log.info("EventAppController:guestList()");
 		
-			if (result.hasErrors()) {
-				attributes.addFlashAttribute("mensagem", "Verifique os campos!");
-				return "redirect:/{codigo}";
-			}
+		List<Guest> listaConvidados = sr.guestList(eventCode);
+
+		return listaConvidados;
+	}
+
+
+	@PostMapping(value="/saveGuest/{eventCode}", produces="application/json")
+	public @ResponseBody void saveGuest(@PathVariable("eventCode") long eventCode, @Valid Guest guest) {
 		
+		log.info("EventAppController:saveGuest()");
 		sr.saveGuest(eventCode, guest);
-		
-		attributes.addFlashAttribute("mensagem", "Convidado adicionado com sucesso!");
-		return "redirect:/{codigo}";
 	}
 	
-
+	
+	
 	@DeleteMapping("/deleteEvent/{code}")
-	public ModelAndView deleteEvent(@PathVariable("code") long code) {
+	public @ResponseBody void deleteEvent(@PathVariable("code") long code) {
 		
+		log.info("EventAppController:deleteEvent()");
 		sr.deleteEvent(code);
-		return new ModelAndView("forward:/eventos");
 	}
 	
 
