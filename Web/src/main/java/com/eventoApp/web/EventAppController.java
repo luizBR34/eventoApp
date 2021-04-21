@@ -32,6 +32,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.eventoApp.configs.Oauth2AuthenticationSuccessHandler;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
+import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 
 import reactor.core.publisher.Mono;
@@ -58,7 +59,7 @@ public class EventAppController implements ErrorController {
 	
 	
 	@GetMapping("/loggedUser")
-	public Mono<String> recuperaUsuarioLogado() {
+	public Mono<User> recuperaUsuarioLogado() {
 		
 		Mono<String> loggedUserMono = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication());
 		
@@ -71,7 +72,7 @@ public class EventAppController implements ErrorController {
 			log.info("EventAppController:recuperaUsuarioLogado() - NENHUM USUARIO LOGADO!");
 		}
 
-		return loggedUserMono;
+		return Mono.just(User.builder().userName(loggedUser).build());
 	}
 	
 	

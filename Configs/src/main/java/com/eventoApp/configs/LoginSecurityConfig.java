@@ -43,7 +43,7 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.csrf().disable()
 		.authorizeRequests().antMatchers(HttpMethod.GET, "/").anonymous()
-        .antMatchers(HttpMethod.GET, "/events/*", "/loggedUser", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
+        .antMatchers(HttpMethod.GET, "/events/*", "/loggedUser/*", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
         .antMatchers(HttpMethod.POST, "/logar/*").permitAll()
         .anyRequest().authenticated()
         
@@ -64,7 +64,7 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 			.logout()
 				.logoutUrl("/logout")
-				.logoutSuccessUrl("/").deleteCookies("remember-me")
+				.logoutSuccessUrl("http://localhost:4200").deleteCookies("remember-me")
 				
 		.and()
 			.exceptionHandling()

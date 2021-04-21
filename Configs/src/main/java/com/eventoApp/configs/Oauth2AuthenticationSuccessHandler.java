@@ -35,8 +35,7 @@ public class Oauth2AuthenticationSuccessHandler implements AuthenticationSuccess
 		HttpSession session = request.getSession();
 		session.setAttribute("user", userName);
 
-		// forward to home page
-		response.sendRedirect(request.getContextPath() + "http://localhost:4200");
+		response.sendRedirect("http://localhost:4200");
 	}
 	
 	
