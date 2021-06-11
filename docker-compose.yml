@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  eventoas-service:
+    image: luizpovoa/eventoas:0.0.1-SNAPSHOT
+    ports:
+      - "8100:8100"
+    restart: always
+    networks:
+      - eventoapp-network
+
+  eventoapp-service:
+    image: luizpovoa/eventoapp:0.0.1-SNAPSHOT
+    ports:
+      - "8443:8443"
+    restart: always
+    environment:
+      EVENTO_CACHE_URI: http://eventocache-service:8585
+    depends_on:
+      - eventoas-service
+    networks:
+      - eventoapp-network
+  
+# Networks to be created to facilitate communication between containers
+networks:
+  eventoapp-network:
