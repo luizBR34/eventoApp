@@ -2,9 +2,9 @@ package com.eventoApp.services;
 
 import java.util.List;
 
+import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
 import com.eventoApp.models.Role;
-import com.eventoApp.models.Event;
 import com.eventoApp.models.User;
 
 public interface ClientService {
@@ -28,4 +28,8 @@ public interface ClientService {
 	public void deleteEvent(long code);
 	
 	public Event deleteGuest(long id);
+	
+	public void saveSession(User user);
+	
+	public User getSession();
 }

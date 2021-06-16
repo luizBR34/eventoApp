@@ -35,8 +35,10 @@ import com.eventoApp.models.Guest;
 import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping
 public class EventAppController implements ErrorController {
@@ -47,40 +49,32 @@ public class EventAppController implements ErrorController {
 	@Autowired
 	private WebClient webClient;
 	
-	@Autowired
-	@Qualifier("oauth2authSuccessHandler")
-	private Oauth2AuthenticationSuccessHandler authenticationHandler;
-	
-	private Logger log = LoggerFactory.getLogger(EventAppController.class);
 	
 	private static final String PATH = "/error";
-	
-	
-	
+
 	
 	@GetMapping("/loggedUser")
-	public Mono<User> recuperaUsuarioLogado() {
+	public Mono<User> retrieveLoggedUser() {
 		
-		Mono<String> loggedUserMono = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication());
+		Mono<User> loggedUserMono = Mono.just(sr.getSession());
 		
-		String loggedUser = loggedUserMono.block();
-		
-		if (!loggedUser.equals("")) {
-			log.info("EventAppController:recuperaUsuarioLogado() - USUARIO LOGADO: " + loggedUser);
+		String loggedUser = loggedUserMono.block().getUserName();
 
-		} else {
-			log.info("EventAppController:recuperaUsuarioLogado() - NENHUM USUARIO LOGADO!");
-		}
+		log.info("EventAppController:retrieveLoggedUser() - SIGNED UP USER: " + loggedUser);
 
-		return Mono.just(User.builder().userName(loggedUser).build());
+		return loggedUserMono;
 	}
 	
 
 	
 	// add request mapping for /access-denied
 	@GetMapping("/access-denied")
-	public ModelAndView showAccessDenied() {
-		return new ModelAndView("proibido");
+	public RedirectView showAccessDenied() {
+
+		log.info("EventAppController:showAccessDenied()");
+	    RedirectView redirect = new RedirectView();
+	    redirect.setUrl("http://localhost:4200/acessDenied");
+	    return redirect;
 	}
 	
 
@@ -114,7 +108,7 @@ public class EventAppController implements ErrorController {
 		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
 		List<Event> eventList = Arrays.asList(um, dois);*/
 		
-		String loggedUser = authenticationHandler.getLoggedUserName(SecurityContextHolder.getContext().getAuthentication()).block();
+		String loggedUser = sr.getSession().getUserName();
 
         List<Event> eventList = sr.eventList(loggedUser);
 
@@ -206,25 +200,26 @@ public class EventAppController implements ErrorController {
 	
 
 	@GetMapping(value = PATH)
-    public ModelAndView manipulaError(HttpServletRequest request) {
+    public RedirectView handleError(HttpServletRequest request) {
 
     	Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-
+	    RedirectView redirect = new RedirectView();
+	    
         if (status != null) {
             Integer statusCode = Integer.valueOf(status.toString());
          
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
-            	return new ModelAndView("perdido");
+            	redirect.setUrl("http://localhost:4200/notFound");
             }
             else if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            	return new ModelAndView("error");
-                
+            	redirect.setUrl("http://localhost:4200/error");
+            	
             } else if(statusCode == HttpStatus.FORBIDDEN.value()) {
-            	return new ModelAndView("proibido");
+            	redirect.setUrl("http://localhost:4200/forbidden");
             }
         }
 
-        return new ModelAndView("error");
+        return redirect;
     }
 
 

@@ -20,10 +20,11 @@ import com.eventoApp.models.Role;
 import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class DefaultClientService implements ClientService {
-
-	private Logger log = LoggerFactory.getLogger(DefaultClientService.class);
 
 	@Autowired
 	@Qualifier("template")
@@ -69,7 +70,7 @@ public class DefaultClientService implements ClientService {
 			log.info("DefaultClientService:searchEvent() - EventoCache API responded the request successfully!");
 			event = responseEntity.getBody();
 		} else {
-			log.error("Error when request event's list from API!");
+			log.error("Error when seek for an event!");
 		}
 
 		log.info("END - DefaultClientService:searchEvent()");
@@ -88,7 +89,7 @@ public class DefaultClientService implements ClientService {
 			log.info("DefaultClientService:seekUser() - EventoCache API responded the request successfully!");
 			user = responseEntity.getBody();
 		} else {
-			log.error("Error when request event's list from API!");
+			log.error("Error when to seek for an User!");
 		}
 
 		log.info("END - DefaultClientService:seekUser()");
@@ -122,7 +123,7 @@ public class DefaultClientService implements ClientService {
 			log.info("DefaultClientService:listGuests() - EventoCache API responded the request successfully!");
 			guestList = responseEntity.getBody();
 		} else {
-			log.error("Error when request event's list from API!");
+			log.error("Error when request guest's list from API!");
 		}
 
 		log.info("END - DefaultClientService:listGuests()");
@@ -176,7 +177,7 @@ public class DefaultClientService implements ClientService {
 			log.info("DefaultClientService:deleteGuest) - EventoWS API responded the request successfully!");
 			event = responseEntity.getBody();
 		} else {
-			log.error("Error when request event's list from API!");
+			log.error("Error when to delete one guest!");
 		}
 
 		log.info("END - DefaultClientService:deleteGuest()");
@@ -195,10 +196,45 @@ public class DefaultClientService implements ClientService {
 			log.info("DefaultClientService:seekRoleByName() - EventoCache API responded the request successfully!");
 			role = responseEntity.getBody();
 		} else {
-			log.error("Error when request event's list from API!");
+			log.error("Error when seek a Role by their name!");
 		}
 
 		log.info("END - DefaultClientService:seekRoleByName()");
 		return role;
+	}
+
+	@Override
+	public void saveSession(User user) {
+
+		log.info("START - DefaultClientService:saveSession()");
+
+		ResponseEntity<Void> responseEntity = client.saveSession(user);
+
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("DefaultClientService:saveSession() - EventoCache API responded the request successfully!");
+		} else {
+			log.error("Error when to save the session!");
+		}
+
+		log.info("END - DefaultClientService:saveSession()");
+	}
+
+	@Override
+	public User getSession() {
+
+		log.info("START - DefaultClientService:getSession()");
+
+		ResponseEntity<User> responseEntity = client.getSession();
+		User user = null;
+
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("DefaultClientService:getSession() - EventoCache API responded the request successfully!");
+			user = responseEntity.getBody();
+		} else {
+			log.error("Error when request the session!");
+		}
+
+		log.info("END - DefaultClientService:getSession()");
+		return user;
 	}
 }
