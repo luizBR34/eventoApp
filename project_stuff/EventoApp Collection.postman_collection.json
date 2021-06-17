@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "b6f5a9b0-1574-4d60-b6fb-0a185e4668eb",
+		"name": "EventoApp Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Oauth Operations",
+			"item": [
+				{
+					"name": "Get Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "microclient",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "siva",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8081/auth/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auth",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "microclient",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/auth/oauth/check_token?token=f2c82b04-28dd-409f-97ae-f4b1f4349b2c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auth",
+								"oauth",
+								"check_token"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "f2c82b04-28dd-409f-97ae-f4b1f4349b2c"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resource Server",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8084/hello?access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDUwNzI3NTQsInVzZXJfbmFtZSI6InNpdmEiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNTIwMjFiNTMtNTdiYS00ZDYwLWJhYWItN2I4NDc5YTk1NGUzIiwiY2xpZW50X2lkIjoibWljcm9jbGllbnQiLCJzY29wZSI6WyJ1c2VyX2luZm8iLCJyZWFkIl19.jVwdbjWLHR_kU5HGnoUWpfZICtHye2b04JBngufCr3H7osNEvrtafJ-coaEcfi2LPje0JI-an9NyAzysyM4OKlzL_Xjpj8QlAF9VfJFxUU_6sJkh2SiZcqSrn6PKP-Y8In-Qgd6U5IntunQPew28tGqv6TcLMa-Pemq6PWDt6xf0VsiWQH7FWhwihYIdRxI-c3tlFh2HAmtDH4VwRmCHZqpIALi_Y8Um4Mw1d7r1wF_zuPz7jqH8oHEmG7SdzEZAOfUp9xbSQAY_e3vppiXNIVuI9iVeQFdwPz51ckKagGFoqVcwhikSO940o_5iMVu7pJWxegUBYi44lSDyKOe6Zw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"hello"
+							],
+							"query": [
+								{
+									"key": "access_token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDUwNzI3NTQsInVzZXJfbmFtZSI6InNpdmEiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiNTIwMjFiNTMtNTdiYS00ZDYwLWJhYWItN2I4NDc5YTk1NGUzIiwiY2xpZW50X2lkIjoibWljcm9jbGllbnQiLCJzY29wZSI6WyJ1c2VyX2luZm8iLCJyZWFkIl19.jVwdbjWLHR_kU5HGnoUWpfZICtHye2b04JBngufCr3H7osNEvrtafJ-coaEcfi2LPje0JI-an9NyAzysyM4OKlzL_Xjpj8QlAF9VfJFxUU_6sJkh2SiZcqSrn6PKP-Y8In-Qgd6U5IntunQPew28tGqv6TcLMa-Pemq6PWDt6xf0VsiWQH7FWhwihYIdRxI-c3tlFh2HAmtDH4VwRmCHZqpIALi_Y8Um4Mw1d7r1wF_zuPz7jqH8oHEmG7SdzEZAOfUp9xbSQAY_e3vppiXNIVuI9iVeQFdwPz51ckKagGFoqVcwhikSO940o_5iMVu7pJWxegUBYi44lSDyKOe6Zw"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Key",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "microclient",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/auth/oauth/token_key",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auth",
+								"oauth",
+								"token_key"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EventoApp",
+			"item": [
+				{
+					"name": "Get eventList",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/myapp/events/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"myapp",
+								"events",
+								""
+							]
+						},
+						"description": "Get All events"
+					},
+					"response": []
+				},
+				{
+					"name": "Post Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "susana",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "senha",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8443/myapp/logar/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"myapp",
+								"logar",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EventoCache",
+			"item": [
+				{
+					"name": "POST saveSession",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 0,\r\n    \"userName\": \"Luiz\",\r\n    \"password\": \"\",\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"\",\r\n    \"roles\": [{\r\n            \"id\": 1,\r\n            \"name\": \"\"\r\n        }\r\n    ],\r\n    \"events\": []\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8585/eventoCache/saveSession",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8585",
+							"path": [
+								"eventoCache",
+								"saveSession"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET getSession",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8585/eventoCache/getSession",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8585",
+							"path": [
+								"eventoCache",
+								"getSession"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
