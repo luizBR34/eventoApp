@@ -37,14 +37,9 @@ COPY ./web/src ./web/src
 # if you have excluded artifacts, then remove -o flag
 RUN mvn -U -f /app/pom.xml -B -e clean package -DskipTests=true
 
-# At this point, BUILDER stage should have your .jar or whatever in some path
-FROM openjdk:8-alpine
-WORKDIR /app/target
-RUN java -Djarmode=layertools -jar *.jar extract
+# Add a volume pointing to /tmp
+VOLUME /tmp
 
-FROM openjdk:8-alpine
-WORKDIR /app
-COPY --from=builder app/boot/target/ ./
-ADD ./*.jar app.jar
-ENV JAVA_OPTS=""
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+ARG JAR_FILE=boot/target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT java -DRABBITMQ_HOST=${RABBITMQ_HOST} -DRABBITMQ_USERNAME=${RABBITMQ_USERNAME} -DRABBITMQ_PASSWORD=${RABBITMQ_PASSWORD} -Djava.security.egd=file:/dev/./urandom  -jar app.jar

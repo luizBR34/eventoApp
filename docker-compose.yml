@@ -1,5 +1,18 @@
 version: '3.7'
 services:
+  eventoangular-service:
+    image: luizpovoa/eventoangular:0.0.1-SNAPSHOT
+    #build:
+      #context: frontend/eventoAngular
+      #dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: always
+    depends_on: # Start the depends_on first
+      - eventoapp-service 
+    networks:
+      - eventoapp-network
+
   eventoas-service:
     image: luizpovoa/eventoas:0.0.1-SNAPSHOT
     ports:
@@ -19,7 +32,42 @@ services:
       - eventoas-service
     networks:
       - eventoapp-network
-  
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: dummypassword 
+      MYSQL_USER: todos-user
+      MYSQL_PASSWORD: dummytodos
+      MYSQL_DATABASE: todos
+    volumes:
+      - mysql-database-data-volume:/var/lib/mysql
+    networks:
+      - eventoapp-network  
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      INSERTION_QUEUE: insertion.queue
+      NUMBER_OF_VALIDATION_CONSUMERS: 1
+      RESPONSE_EXCHANGE: response.exchange
+      RESPONSE_ROUTING_KEY: response.routing.key
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+
+# Volumes
+volumes:
+  mysql-database-data-volume:
+
 # Networks to be created to facilitate communication between containers
 networks:
   eventoapp-network:
