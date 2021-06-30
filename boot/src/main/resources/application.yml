@@ -6,7 +6,7 @@ security:
   require-ssl: true
     
 server:
-  port: 8443  
+  port: 8443
   servlet:
     context-path: /myapp
     session:
@@ -27,7 +27,7 @@ eventocache:
     
 spring:
   thymeleaf:
-    enabled: true
+    enabled: false
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect    
     hibernate:
@@ -38,17 +38,6 @@ spring:
     console:
       path: /h2-console
       enabled: true
-  rabbitmq:
-    host: localhost
-    port: "5672"
-    username: eventoapp
-    password: segredo
-    listener:
-      default-requeue-rejected: "false"
-      retry:
-        enabled: "true"
-        max-attempts: "3"
-        initial-interval: "5000"       
   security:
     oauth2:
       client:
@@ -73,9 +62,4 @@ spring:
               authorization-uri: http://localhost:8081/auth/oauth/authorize
               user-info-uri: http://localhost:8081/auth/userinfo
               user-name-attribute: username
-             
-name:
-  topicexchange:
-    eventoapp: eventoapp.integration.exchange
-  routingKey:
-    eventoapp: routingKey_eventoapp
+

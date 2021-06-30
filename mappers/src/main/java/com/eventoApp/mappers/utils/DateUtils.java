@@ -17,6 +17,8 @@ public class DateUtils {
     
     // read a date string and parse/convert to a date
     public static Date parseDate(String dateStr) throws ParseException {
+    	
+    	dateStr = dateStr.replace('/', '-');
         Date theDate = formatter.parse(dateStr);
         
         return theDate;        

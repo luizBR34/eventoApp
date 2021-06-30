@@ -31,8 +31,29 @@ services:
     depends_on:
       - eventoas-service
     networks:
+      - eventoapp-network 
+      
+  vault:
+    image: vault:latest
+    container_name: vault
+    restart: on-failure:10
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: 'https://127.0.0.1:8200'
+      VAULT_LOCAL_CONFIG: '{"listener": [{"tcp":{"address": "127.0.0.1:8200","tls_disable":"0", "tls_cert_file":"/data/vault-volume/certificate.pem", "tls_key_file":"/data/vault-volume/key.pem"}}], "default_lease_ttl": "168h", "max_lease_ttl": "720h"}, "ui": true}'
+      VAULT_DEV_ROOT_TOKEN_ID: 's.hBOgjdoVINT9E5KOPBu1OZUw'
+      VAULT_TOKEN: 's.hBOgjdoVINT9E5KOPBu1OZUw'
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault-volume:/data
+    healthcheck:
+      retries: 5
+    command: server -dev -dev-root-token-id="s.hBOgjdoVINT9E5KOPBu1OZUw"
+    networks:
       - eventoapp-network
-
+      
   mysql:
     image: mysql:5.7
     ports:

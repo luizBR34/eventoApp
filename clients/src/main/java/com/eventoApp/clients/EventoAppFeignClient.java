@@ -28,12 +28,19 @@ public interface EventoAppFeignClient {
 	public ResponseEntity<Event> seekEvent(@PathVariable("code") long code);
 	
 	
+	@PostMapping("/eventoCache/saveEvent")
+	public ResponseEntity<Void> saveEvent(@RequestBody @Valid Event event);
+	
+	
 	@GetMapping("/eventoCache/seekUser/{login}")
 	public ResponseEntity<User> seekUser(@PathVariable("login") String login);
 	
 	
 	@GetMapping("/eventoCache/listGuests/{eventCode}")
 	public ResponseEntity<List<Guest>> guestList(@PathVariable("eventCode") long eventCode);
+	
+	@PostMapping("/eventoCache/saveGuest/{eventCode}")
+	public ResponseEntity<Void> saveGuest(@PathVariable("eventCode") long eventCode, @RequestBody @Valid Guest guest);
 	
 	
 	@DeleteMapping("/eventoCache/deleteEvent/{code}")

@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import com.eventoApp.mappers.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -37,6 +38,10 @@ public class Event implements Serializable {
 	private String date;
 
 	private String time;
+	
+	private User user;
+	
+	private List<Guest> guests;
 }
 
 

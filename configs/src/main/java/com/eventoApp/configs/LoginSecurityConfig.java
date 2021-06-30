@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -41,10 +44,13 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.csrf().disable()
+		http.csrf().disable().sessionManagement().maximumSessions(1).sessionRegistry(registroSecao())
+		.and()
+			.sessionCreationPolicy(SessionCreationPolicy.NEVER)
+		.and()
 		.authorizeRequests().antMatchers(HttpMethod.GET, "/").anonymous()
         .antMatchers(HttpMethod.GET, "/events/*", "/loggedUser/*", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
-        .antMatchers(HttpMethod.POST, "/logar/*").permitAll()
+        .antMatchers(HttpMethod.POST, "/logar/*", "/saveEvent/").permitAll()
         .anyRequest().authenticated()
 		.and()
 			.formLogin()
@@ -71,6 +77,12 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.headers().frameOptions().disable();
 	}
+	
+	
+    @Bean
+    public SessionRegistry registroSecao() {
+        return new SessionRegistryImpl();
+    }
 	
 	
 	//Define a autenticação de páginas estáticas (não bloquear style)

@@ -1,20 +1,21 @@
 package com.eventoApp.web;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.eventoApp.configs.Oauth2AuthenticationSuccessHandler;
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
 import com.eventoApp.models.User;
@@ -49,6 +48,9 @@ public class EventAppController implements ErrorController {
 	@Autowired
 	private WebClient webClient;
 	
+	@Autowired
+	private SessionRegistry session;
+	
 	
 	private static final String PATH = "/error";
 
@@ -56,7 +58,11 @@ public class EventAppController implements ErrorController {
 	@GetMapping("/loggedUser")
 	public Mono<User> retrieveLoggedUser() {
 		
-		Mono<User> loggedUserMono = Mono.just(sr.getSession());
+		List<Object> principals = session.getAllPrincipals();
+
+		Mono<User> loggedUserMono = (!principals.isEmpty()) ? 
+									Mono.just(User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build()) : 
+									Mono.just(sr.getSession());
 		
 		String loggedUser = loggedUserMono.block().getUserName();
 
@@ -83,7 +89,7 @@ public class EventAppController implements ErrorController {
 	@GetMapping(value="/saveEvent")
 	public RedirectView saveEventForm() {
 		
-		log.info("EventAppController:formCadastrarEvento()");
+		log.info("EventAppController:saveEventForm()");
 	    RedirectView redirect = new RedirectView();
 	    redirect.setUrl("http://localhost:4200/cadastrarEvento");
 	    return redirect;
@@ -94,6 +100,18 @@ public class EventAppController implements ErrorController {
 	@PostMapping(value="/saveEvent")
 	public void saveEvent(@RequestBody @Valid Event event) {
 		
+		List<Object> principals = session.getAllPrincipals();
+		User user = null;
+		
+		if (!principals.isEmpty()) {
+			
+			user = sr.seekUser(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername());
+			
+			if (nonNull(user)) {
+				event.setUser(user);
+			}
+		}
+
 		sr.saveEvent(event);
 	}
 	
@@ -108,9 +126,15 @@ public class EventAppController implements ErrorController {
 		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
 		List<Event> eventList = Arrays.asList(um, dois);*/
 		
-		String loggedUser = sr.getSession().getUserName();
+		List<Object> principals = session.getAllPrincipals();
+		
+		User loggedUser = (!principals.isEmpty()) ? 
+						User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build() : 
+						sr.getSession();
 
-        List<Event> eventList = sr.eventList(loggedUser);
+        List<Event> eventList = (!loggedUser.getUserName().equals("Visitor")) ? 
+        							   sr.eventList(loggedUser.getUserName()) : 
+        							   Collections.emptyList();
 
 		return eventList;
 	}

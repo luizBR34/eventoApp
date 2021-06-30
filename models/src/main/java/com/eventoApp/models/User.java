@@ -36,5 +36,5 @@ public class User implements Serializable {
 
 	private Collection<Role> roles;
 	
-	private Collection<Event> events;
+	//private Collection<Event> events;
 }

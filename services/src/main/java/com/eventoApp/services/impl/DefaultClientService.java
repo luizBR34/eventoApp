@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class DefaultClientService implements ClientService {
-
-	@Autowired
-	@Qualifier("template")
-	private AmqpTemplate template;
-
-	@Autowired
-	private Environment env;
 
 	@Value(value = "${eventocache.endpoint.uri}")
 	private String eventoCacheEndpointURI;
@@ -100,14 +92,7 @@ public class DefaultClientService implements ClientService {
 	@Override
 	public void saveUser(User user) {
 		
-		log.info("START - DefaultClientService:saveUser()");
 
-		String topicExchangeBroker = env.getProperty("name.topicexchange.eventoapp");
-		String routingKey = env.getProperty("name.routingKey.eventoapp");
-
-		template.convertAndSend(topicExchangeBroker, routingKey, user);
-
-		log.info("END - DefaultClientService:saveUser()");
 	}
 	
 
@@ -132,26 +117,32 @@ public class DefaultClientService implements ClientService {
 
 	@Override
 	public void saveGuest(long eventCode, Guest guest) {
-
+		
 		log.info("START - DefaultClientService:saveGuest()");
+		
+		ResponseEntity<Void> responseEntity = client.saveGuest(eventCode, guest);
 
-		String topicExchangePrice = env.getProperty("name.topicexchange.assortment");
-		String routingKey = env.getProperty("name.routingKey.updates");
-
-		template.convertAndSend(topicExchangePrice, routingKey, guest);
-
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("DefaultClientService:saveGuest() - The Guest was successfully saved!");
+		} else {
+			log.error("Error when to save the Guest!");
+		}
+		
 		log.info("END - DefaultClientService:saveGuest()");
 	}
 
 	@Override
 	public void saveEvent(Event event) {
-
+		
 		log.info("START - DefaultClientService:saveEvent()");
+		
+		ResponseEntity<Void> responseEntity = client.saveEvent(event);
 
-		String topicExchangePrice = env.getProperty("name.topicexchange.eventoapp");
-		String routingKey = env.getProperty("name.routingKey.eventoapp");
-
-		template.convertAndSend(topicExchangePrice, routingKey, event);
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("DefaultClientService:saveEvent() - The Event was successfully saved!");
+		} else {
+			log.error("Error when to save the session!");
+		}
 		
 		log.info("END - DefaultClientService:saveEvent()");
 	}
