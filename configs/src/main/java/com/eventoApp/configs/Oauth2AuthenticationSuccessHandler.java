@@ -39,8 +39,6 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 		log.info("Username: " + userName);
 		
 		sr.saveSession(User.builder().userName(userName).build());
-
-		response.sendRedirect("http://localhost:4200/eventos");
 	}
 	
 	

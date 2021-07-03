@@ -24,7 +24,7 @@ public interface EventoAppFeignClient {
 	public ResponseEntity<List<Event>> eventList(@PathVariable("username") String username);
 	
 	
-	@GetMapping("/eventoCache/searchEvent/{code}")
+	@GetMapping("/eventoCache/seekEvent/{code}")
 	public ResponseEntity<Event> seekEvent(@PathVariable("code") long code);
 	
 	
