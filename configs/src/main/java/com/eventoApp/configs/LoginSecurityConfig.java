@@ -39,6 +39,9 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Autowired
+	private CustomLogoutSuccessHandler logoutSuccessHandler;
 
 
 	@Override
@@ -57,7 +60,6 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("http://localhost:4200/home?login=true")
 				.loginProcessingUrl("/logar/*")
 				.successHandler(oauth2authSuccessHandler)
-				.failureUrl("http://localhost:4200/home?login=false")
 	
         .and()
 		.oauth2Login()
@@ -65,12 +67,13 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 			.successHandler(oauth2authSuccessHandler)
 			
 		.and()
-			.rememberMe().key("myremembermekey")	
+			.rememberMe().key("remember-me")	
 		.and()
 			.logout()
 				.logoutUrl("/logout")
-				.logoutSuccessUrl("http://localhost:4200/home").deleteCookies("remember-me")
-				
+				.logoutSuccessHandler(logoutSuccessHandler)
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
 		.and()
 			.exceptionHandling()
 			.accessDeniedPage("/access-denied");

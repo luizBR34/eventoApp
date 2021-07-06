@@ -1,6 +1,5 @@
 package com.eventoApp.web;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import java.net.URI;
@@ -50,7 +49,6 @@ public class EventAppController implements ErrorController {
 	
 	@Autowired
 	private SessionRegistry session;
-	
 	
 	private static final String PATH = "/error";
 
@@ -126,15 +124,16 @@ public class EventAppController implements ErrorController {
 		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
 		List<Event> eventList = Arrays.asList(um, dois);*/
 		
+					   
 		List<Object> principals = session.getAllPrincipals();
-		
+	
 		User loggedUser = (!principals.isEmpty()) ? 
 						User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build() : 
 						sr.getSession();
 
-        List<Event> eventList = (!loggedUser.getUserName().equals("Visitor")) ? 
-        							   sr.eventList(loggedUser.getUserName()) : 
-        							   Collections.emptyList();
+		List<Event> eventList = (!loggedUser.getUserName().equals("Visitor")) ? 
+								   sr.eventList(loggedUser.getUserName()) : 
+								   Collections.emptyList();
 
 		return eventList;
 	}
@@ -151,7 +150,6 @@ public class EventAppController implements ErrorController {
 	}
 	
 
-	
 
 	@GetMapping(value="/seekEvent/{code}", produces="application/json")
 	public @ResponseBody Event seekEvent(@PathVariable("code") long code) {
