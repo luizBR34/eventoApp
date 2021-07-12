@@ -3,7 +3,13 @@ pipeline {
 	stages {
 		stage("Cleaning Stage") {
 			steps {
-				sh "mvn clean"
+               withEnv(["MVN_HOME=$mvnHome"]) {
+                    if (isUnix()) {
+                        sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean'
+                    } else {
+                        bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean/)
+                    }
+                }
 			}
 		}
 		stage("Testing Stage") {
