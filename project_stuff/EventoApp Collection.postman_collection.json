@@ -266,6 +266,75 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Post Save Event",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"code\": 0,\r\n\t\"name\": \"Primeiro Evento\",\r\n\t\"city\": \"Sao PAulo\",\r\n\t\"date\": \"18/06/2021\",\r\n\t\"time\": \"11:00\",\r\n\t\"user\": {\r\n\t\t\r\n\t\t\"id\": 0,\r\n\t\t\"userName\": \"susana\",\r\n\t\t\"password\": \"\",\r\n\t\t\"firstName\": \"\",\r\n\t\t\"lastName\": \"\",\r\n\t\t\"email\": \"\",\r\n\t\t\"roles\": []\r\n\t\t\r\n\t}\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:8443/myapp/saveEvent/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"myapp",
+								"saveEvent",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET SeekEvent",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:8443/myapp/seekEvent/5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8443",
+							"path": [
+								"myapp",
+								"seekEvent",
+								"5"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -298,6 +367,40 @@
 							"path": [
 								"eventoCache",
 								"saveSession"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET SeekEvent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8585/eventoCache/seekEvent?username=susana&code=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8585",
+							"path": [
+								"eventoCache",
+								"seekEvent"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "susana"
+								},
+								{
+									"key": "code",
+									"value": "3"
+								}
 							]
 						}
 					},

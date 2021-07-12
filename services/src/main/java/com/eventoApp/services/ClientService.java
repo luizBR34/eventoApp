@@ -11,7 +11,7 @@ public interface ClientService {
 	
 	public List<Event> eventList(String username);
 	
-	public Event seekEvent(long code);
+	public Event seekEvent(String username, long code);
 
 	public User seekUser(String login);
 	
@@ -25,7 +25,7 @@ public interface ClientService {
 	
 	public void saveEvent(Event evento);
 	
-	public void deleteEvent(long code);
+	public void deleteEvent(String username, long code);
 	
 	public Event deleteGuest(long id);
 	

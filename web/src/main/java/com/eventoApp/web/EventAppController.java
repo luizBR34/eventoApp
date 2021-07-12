@@ -120,7 +120,7 @@ public class EventAppController implements ErrorController {
 		
 		log.info("EventAppController:getEventList()");
 		
-/*		Event um = new Event(1, "Casamento do Fulano", "São PAulo", "12/04/2021", "11:00");
+/*		Event um = new Event(1, "Casamento do Fulano", "Sï¿½o PAulo", "12/04/2021", "11:00");
 		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
 		List<Event> eventList = Arrays.asList(um, dois);*/
 		
@@ -156,9 +156,13 @@ public class EventAppController implements ErrorController {
 		
 		log.info("START - EventAppController:seekEvent()");
 		
-		Event soughtEvent = sr.seekEvent(code);
+		List<Object> principals = session.getAllPrincipals();
 		
-		log.info(soughtEvent + "/n" + "END - EventAppController:seekEvent()");
+		String loggedUser = ((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername();
+		
+		Event soughtEvent = sr.seekEvent(loggedUser, code);
+		
+		log.info("END - EventAppController:seekEvent()");
 		
 		return soughtEvent;
 	}
@@ -189,8 +193,15 @@ public class EventAppController implements ErrorController {
 	@DeleteMapping("/deleteEvent/{code}")
 	public @ResponseBody void deleteEvent(@PathVariable("code") long code) {
 		
-		log.info("EventAppController:deleteEvent()");
-		sr.deleteEvent(code);
+		log.info("START - EventAppController:deleteEvent()");
+
+		List<Object> principals = session.getAllPrincipals();
+
+		String loggedUser = ((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername();
+
+		sr.deleteEvent(loggedUser, code);
+
+		log.info("END - EventAppController:deleteEvent()");
 	}
 	
 

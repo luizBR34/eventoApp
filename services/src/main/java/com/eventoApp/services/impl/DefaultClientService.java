@@ -47,11 +47,11 @@ public class DefaultClientService implements ClientService {
 	}
 
 	@Override
-	public Event seekEvent(long code) {
+	public Event seekEvent(String username, long code) {
 
 		log.info("START - DefaultClientService:searchEvent()");
 
-		ResponseEntity<Event> responseEntity = client.seekEvent(code);
+		ResponseEntity<Event> responseEntity = client.seekEvent(username, code);
 		Event event = null;
 
 		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
@@ -144,11 +144,11 @@ public class DefaultClientService implements ClientService {
 	}
 
 	@Override
-	public void deleteEvent(long code) {
+	public void deleteEvent(String username, long code) {
 
 		log.info("START - DefaultClientService:deleteEvent()");
 		
-		client.deleteEvent(code);
+		client.deleteEvent(username, code);
 
 		log.info("END - DefaultClientService:deleteEvent()");
 	}

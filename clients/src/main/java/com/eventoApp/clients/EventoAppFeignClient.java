@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eventoApp.models.Event;
 import com.eventoApp.models.Guest;
@@ -24,8 +25,8 @@ public interface EventoAppFeignClient {
 	public ResponseEntity<List<Event>> eventList(@PathVariable("username") String username);
 	
 	
-	@GetMapping("/eventoCache/seekEvent/{code}")
-	public ResponseEntity<Event> seekEvent(@PathVariable("code") long code);
+	@GetMapping("/eventoCache/seekEvent")
+	public ResponseEntity<Event> seekEvent(@RequestParam("username") String username, @RequestParam("code") long code);
 	
 	
 	@PostMapping("/eventoCache/saveEvent")
@@ -41,10 +42,11 @@ public interface EventoAppFeignClient {
 	
 	@PostMapping("/eventoCache/saveGuest/{eventCode}")
 	public ResponseEntity<Void> saveGuest(@PathVariable("eventCode") long eventCode, @RequestBody @Valid Guest guest);
-	
-	
-	@DeleteMapping("/eventoCache/deleteEvent/{code}")
-	public ResponseEntity<Void> deleteEvent(@PathVariable("code") long code);
+
+
+	@DeleteMapping("/eventoCache/deleteEvent")
+	public ResponseEntity<Void> deleteEvent(@RequestParam("username") String username,
+											@RequestParam("code") long code);
 	
 	
 	@DeleteMapping("/eventoCache/deleteGuest/{id}")
