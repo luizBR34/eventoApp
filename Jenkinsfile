@@ -1,13 +1,9 @@
 pipeline {
 	agent any
-	def mvnHome
 	stages {
 		stage("Cleaning Stage") {
-		mvnHome = tool 'M3'
 			steps {
-               withEnv(["MVN_HOME=$mvnHome"]) {
-                    sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean'
-                }
+                sh '"/var/jenkins_home/apache-maven-3.6.3/bin/mvn" -Dmaven.test.failure.ignore clean'
 			}
 		}
 		stage("Testing Stage") {
