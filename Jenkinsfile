@@ -6,11 +6,7 @@ pipeline {
 		mvnHome = tool 'M3'
 			steps {
                withEnv(["MVN_HOME=$mvnHome"]) {
-                    if (isUnix()) {
-                        sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean'
-                    } else {
-                        bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean/)
-                    }
+                    sh '"$MVN_HOME/bin/mvn" -Dmaven.test.failure.ignore clean'
                 }
 			}
 		}
