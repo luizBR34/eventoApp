@@ -8,12 +8,12 @@ pipeline {
 		}
 		stage("Testing Stage") {
 			steps {
-				sh "mvn test"
+			    sh '"/var/jenkins_home/apache-maven-3.6.3/bin/mvn" -Dmaven.test.failure.ignore test'
 			}
 		}
 		stage("Packaging Stage") {
 			steps {
-				sh "mvn package"
+			    sh '"/var/jenkins_home/apache-maven-3.6.3/bin/mvn" -Dmaven.test.failure.ignore package'
 			}
 		}
 		stage("Consolidate Results") {
