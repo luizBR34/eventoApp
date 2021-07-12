@@ -1,7 +1,9 @@
 pipeline {
 	agent any
+	def mvnHome
 	stages {
 		stage("Cleaning Stage") {
+		mvnHome = tool 'M3'
 			steps {
                withEnv(["MVN_HOME=$mvnHome"]) {
                     if (isUnix()) {
