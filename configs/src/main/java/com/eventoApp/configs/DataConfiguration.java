@@ -41,14 +41,14 @@ public class DataConfiguration implements WebMvcConfigurer {
 	
 	
 	@Bean
-	public FilterRegistrationBean<CorsFilter> specifyCorsFilter() {
+	public FilterRegistrationBean<CorsFilter> corsFilter() {
 	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 	    
-	    CorsConfiguration config = new CorsConfiguration();  
-	    config.setAllowCredentials(true); 
-	    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200")); 
-	    config.setAllowedMethods(Collections.singletonList("*"));  
-	    config.setAllowedHeaders(Collections.singletonList("*")); 
+	    CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+		config.setAllowedMethods(Collections.singletonList("*"));
+	    config.setAllowedHeaders(Collections.singletonList("*"));
+		config.setAllowCredentials(true);
 	    
 	    source.registerCorsConfiguration("/**", config);  
 	    

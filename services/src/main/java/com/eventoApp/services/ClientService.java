@@ -32,4 +32,6 @@ public interface ClientService {
 	public void saveSession(User user);
 	
 	public User getSession();
+
+	public void deleteSession();
 }

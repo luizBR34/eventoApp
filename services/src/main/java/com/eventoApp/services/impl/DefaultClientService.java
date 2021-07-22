@@ -224,4 +224,20 @@ public class DefaultClientService implements ClientService {
 		log.info("END - DefaultClientService:getSession()");
 		return user;
 	}
+
+	@Override
+	public void deleteSession() {
+
+		log.info("START - DefaultClientService:deleteSession()");
+
+		ResponseEntity<Void> responseEntity = client.deleteSession();
+
+		if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+			log.info("DefaultClientService:deleteSession() - EventoCache API responded the request successfully!");
+		} else {
+			log.error("Error when delete the session!");
+		}
+
+		log.info("END - DefaultClientService:deleteSession()");
+	}
 }

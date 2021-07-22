@@ -1,6 +1,7 @@
 package com.eventoApp.configs;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,17 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 		
 		String userName = getLoggedUserName(authentication).block();
 		log.info("Username: " + userName);
+
+		User user = User.builder().userName(userName).build();
+
+		response.getHeaderNames().stream()
+								 .filter(header -> header.equals("Set-Cookie"))
+								 .forEach(header -> user.setAuthorization(response.getHeader(header)));
 		
-		sr.saveSession(User.builder().userName(userName).build());
+		sr.saveSession(user);
+		
+		String pass = user.getAuthorization();
+		response.addHeader("authorization", pass.substring(0, pass.indexOf(';')));
 	}
 	
 	

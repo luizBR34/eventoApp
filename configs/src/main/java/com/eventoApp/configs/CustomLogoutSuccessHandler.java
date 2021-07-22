@@ -1,11 +1,13 @@
 package com.eventoApp.configs;
 
 import java.io.IOException;
+import static java.util.Objects.nonNull;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.eventoApp.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -19,13 +21,18 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 	@Autowired
 	private SessionRegistry session;
 
+	@Autowired
+	private ClientService sr;
+
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
 
-		session.getAllSessions(authentication.getPrincipal(), false)
-		.stream()
-		.forEach(s -> session.removeSessionInformation(s.getSessionId()));
+		session.getAllSessions(nonNull(authentication) ? authentication.getPrincipal() : new Object() , false)
+				.stream()
+				.forEach(s -> session.removeSessionInformation(s.getSessionId()));
+
+		sr.deleteSession();
 				
 		String URL = "http://localhost:4200/home";
 		response.setStatus(HttpStatus.OK.value());

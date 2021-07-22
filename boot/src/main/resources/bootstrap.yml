@@ -7,6 +7,6 @@ spring:
       port: 8200
       scheme: http
      # authentication: token
-      token: s.qXEARqRte0hk6CLcnmkoWaxV
+      token: s.z8ehPIPXGcJgsfaDt0wsWmU9
 
          

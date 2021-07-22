@@ -61,4 +61,7 @@ public interface EventoAppFeignClient {
 	
 	@GetMapping("/eventoCache/getSession")
 	public ResponseEntity<User> getSession();
+
+	@DeleteMapping("/eventoCache/deleteSession")
+	public ResponseEntity<Void> deleteSession();
 }

@@ -34,6 +34,8 @@ public class User implements Serializable {
 
 	private String email;
 
+	private String authorization;
+
 	private Collection<Role> roles;
 	
 	//private Collection<Event> events;
