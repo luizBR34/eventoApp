@@ -6,6 +6,7 @@ import com.eventoApp.models.User;
 import com.eventoApp.services.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.session.SessionRegistry;
@@ -32,24 +33,21 @@ public class EventAppController implements ErrorController {
 
 	@Autowired
 	private ClientService sr;
+
+	@Autowired
+	@Qualifier("sessionsPersisted")
+	private SessionRegistry session;
 	
 	@Autowired
 	private WebClient webClient;
-	
-	@Autowired
-	private SessionRegistry session;
 	
 	private static final String PATH = "/error";
 
 	
 	@GetMapping("/loggedUser")
 	public Mono<User> retrieveLoggedUser() {
-		
-		List<Object> principals = session.getAllPrincipals();
 
-		Mono<User> loggedUserMono = (!principals.isEmpty()) ? 
-									Mono.just(User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build()) : 
-									Mono.just(sr.getSession());
+		Mono<User> loggedUserMono = Mono.just(getAuthenticatedUser());
 		
 		String loggedUser = loggedUserMono.block().getUserName();
 
@@ -86,18 +84,12 @@ public class EventAppController implements ErrorController {
 	
 	@PostMapping(value="/saveEvent")
 	public void saveEvent(@RequestBody @Valid Event event) {
-		
-		List<Object> principals = session.getAllPrincipals();
-		User user = null;
-		
-		if (!principals.isEmpty()) {
-			
-			user = sr.seekUser(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername());
+
+		User user = sr.seekUser(getAuthenticatedUser().getUserName());
 			
 			if (nonNull(user)) {
 				event.setUser(user);
 			}
-		}
 
 		sr.saveEvent(event);
 	}
@@ -112,13 +104,8 @@ public class EventAppController implements ErrorController {
 /*		Event um = new Event(1, "Casamento do Fulano", "S�o PAulo", "12/04/2021", "11:00");
 		Event dois = new Event(2, "Cinema", "Rio de Janeiro", "16/08/2018", "18:00");
 		List<Event> eventList = Arrays.asList(um, dois);*/
-		
-					   
-		List<Object> principals = session.getAllPrincipals();
-	
-		User loggedUser = (!principals.isEmpty()) ? 
-						User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build() : 
-						sr.getSession();
+
+		User loggedUser = getAuthenticatedUser();
 
 		List<Event> eventList = (!loggedUser.getUserName().equals("Visitor")) ? 
 								   sr.eventList(loggedUser.getUserName()) : 
@@ -144,10 +131,8 @@ public class EventAppController implements ErrorController {
 	public @ResponseBody Event seekEvent(@PathVariable("code") long code) {
 		
 		log.info("START - EventAppController:seekEvent()");
-		
-		List<Object> principals = session.getAllPrincipals();
-		
-		String loggedUser = ((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername();
+
+		String loggedUser = getAuthenticatedUser().getUserName();
 		
 		Event soughtEvent = sr.seekEvent(loggedUser, code);
 		
@@ -184,9 +169,7 @@ public class EventAppController implements ErrorController {
 		
 		log.info("START - EventAppController:deleteEvent()");
 
-		List<Object> principals = session.getAllPrincipals();
-
-		String loggedUser = ((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername();
+		String loggedUser = getAuthenticatedUser().getUserName();
 
 		sr.deleteEvent(loggedUser, code);
 
@@ -203,7 +186,7 @@ public class EventAppController implements ErrorController {
 		long eventCode = event.getCode();
 		String code = "" + eventCode;
 		
-		return "redirect:/" + code; // chama o mÃ©todo detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
+		return "redirect:/" + code; // chama o metodo detalhesEvento(@PathVariable("codigo") long codigo) mostrando a lista de eventos
 	}
 
 
@@ -217,7 +200,22 @@ public class EventAppController implements ErrorController {
 		
 		return response;
 	}
-	
+
+
+
+	public User getAuthenticatedUser() {
+
+		List<Object> principals = session.getAllPrincipals();
+
+		User loggedUser = (!principals.isEmpty()) ?
+				principals.get(0) instanceof org.springframework.security.core.userdetails.User ?
+						User.builder().userName(((org.springframework.security.core.userdetails.User) principals.get(0)).getUsername()).build() :
+						User.builder().userName(((org.springframework.security.oauth2.core.user.DefaultOAuth2User) principals.get(0)).getAttributes().containsKey("username") ?
+								((org.springframework.security.oauth2.core.user.DefaultOAuth2User) principals.get(0)).getAttributes().get("username").toString() :
+								((org.springframework.security.oauth2.core.user.DefaultOAuth2User) principals.get(0)).getAttributes().get("name").toString()).build() :
+				sr.getSession();
+		return loggedUser;
+	}
 	
 	
 

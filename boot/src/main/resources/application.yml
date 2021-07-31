@@ -47,10 +47,10 @@ spring:
             client-secret: -O4njCoDfypf5ATwKQUQw_T9
             scope: openid,profile,email
             client-name: SivaGoogle
-          way2learnclient:
+          eventoas:
             client-id: microclient
             client-secret: secret
-            client-name: Way2learn
+            client-name: EventoApp
             scope: user_info,read
             redirect-uri: https://localhost:8443/myapp/login/oauth2/code/way2learnappclient
             client-authentication-method: basic

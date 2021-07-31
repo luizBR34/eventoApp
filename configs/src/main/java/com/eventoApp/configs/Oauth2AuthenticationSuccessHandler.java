@@ -1,14 +1,7 @@
 package com.eventoApp.configs;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.eventoApp.models.User;
+import com.eventoApp.services.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import com.eventoApp.models.User;
-import com.eventoApp.services.ClientService;
-
 import reactor.core.publisher.Mono;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component("oauth2authSuccessHandler")
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -70,7 +66,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 			attributes.put("username", "Visitor");
 		}
 		
-		Mono<String> user = Mono.just(attributes.get("username").toString());
+		Mono<String> user = Mono.just(attributes.containsKey("username") ? attributes.get("username").toString() : attributes.get("name").toString());
 		return user;
 	}
 }

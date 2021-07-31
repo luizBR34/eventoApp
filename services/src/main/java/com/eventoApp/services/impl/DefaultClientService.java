@@ -83,8 +83,8 @@ public class DefaultClientService implements ClientService {
 		log.info("END - DefaultClientService:seekUser()");
 		return user;
 	}
-	
-	
+
+
 	@Override
 	public void saveUser(User user) {
 		

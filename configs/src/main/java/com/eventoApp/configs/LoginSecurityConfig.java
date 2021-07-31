@@ -30,13 +30,11 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private UserService userService;
-	
-	
+
 	@Autowired
 	@Qualifier("oauth2authSuccessHandler")
 	private AuthenticationSuccessHandler oauth2authSuccessHandler;
-	
-	
+
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
@@ -47,12 +45,12 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.csrf().disable().sessionManagement().maximumSessions(1).sessionRegistry(registroSecao())
+		http.csrf().disable().sessionManagement().maximumSessions(1).sessionRegistry(sessionsPersisted())
 		.and()
 			.sessionCreationPolicy(SessionCreationPolicy.NEVER)
 		.and()
 			.authorizeRequests().antMatchers(HttpMethod.GET, "/").anonymous()
-        	.antMatchers(HttpMethod.GET,"/loggedUser/*", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
+        	.antMatchers(HttpMethod.GET, "/loggedUser/*", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
         	.antMatchers(HttpMethod.POST, "/logar/*").permitAll()
         	.anyRequest().authenticated()
 		.and()
@@ -80,13 +78,14 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.headers().frameOptions().disable();
 	}
-	
-	
-    @Bean
-    public SessionRegistry registroSecao() {
-        return new SessionRegistryImpl();
-    }
-	
+
+
+	@Bean
+	@Qualifier("sessionsPersisted")
+	public SessionRegistry sessionsPersisted() {
+		return new SessionRegistryImpl();
+	}
+
 	
 	//Define a autenticação de páginas estáticas (não bloquear style)
 	@Override

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.eventoApp.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 	
 	@Autowired
+	@Qualifier("sessionsPersisted")
 	private SessionRegistry session;
 
 	@Autowired
