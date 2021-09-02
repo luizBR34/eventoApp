@@ -1,5 +1,6 @@
 package com.eventoApp.configs;
 
+import com.eventoRS.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +19,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import com.eventoApp.services.UserService;
 
 
 @Configuration
@@ -50,22 +49,22 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionCreationPolicy(SessionCreationPolicy.NEVER)
 		.and()
 			.authorizeRequests().antMatchers(HttpMethod.GET, "/").anonymous()
-        	.antMatchers(HttpMethod.GET, "/loggedUser/*", "/oauth2/authorization/**", "/logout", "/access-denied", "/h2-console/**").permitAll()
-        	.antMatchers(HttpMethod.POST, "/logar/*").permitAll()
+        	.antMatchers(HttpMethod.GET,"/logout", "/access-denied", "/h2-console/**").permitAll()
+        	.antMatchers(HttpMethod.POST, "/logar/**").permitAll()
         	.anyRequest().authenticated()
 		.and()
 			.formLogin()
 				.loginPage("http://localhost:4200/home?login=true")
-				.loginProcessingUrl("/logar/*")
+				.loginProcessingUrl("/logar/**")
 				.successHandler(oauth2authSuccessHandler)
 	
         .and()
 		.oauth2Login()
 			.loginPage("http://localhost:4200/home?login=true")
 			.successHandler(oauth2authSuccessHandler)
-			
+
 		.and()
-			.rememberMe().key("remember-me")	
+			.rememberMe().key("remember-me")
 		.and()
 			.logout()
 				.logoutUrl("/logout")

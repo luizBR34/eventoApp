@@ -32,7 +32,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.eventoApp.services</groupId>
+            <groupId>com.eventoRS.services</groupId>
             <artifactId>services</artifactId>
             <version>${project.version}</version>
         </dependency>

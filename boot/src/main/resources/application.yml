@@ -19,12 +19,8 @@ server:
     key-alias: eventoapp
   error:
     whitelabel:
-      enabled: "false"
-      
-eventocache:
-  endpoint:
-    uri: http://localhost:8585/eventoCache
-    
+      enabled: false
+
 spring:
   thymeleaf:
     enabled: false
@@ -52,14 +48,13 @@ spring:
             client-secret: secret
             client-name: EventoApp
             scope: user_info,read
-            redirect-uri: https://localhost:8443/myapp/login/oauth2/code/way2learnappclient
+            redirect-uri: https://localhost:8443/myapp/login/oauth2/code/eventoas
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            provider: way2learn-authserver-provider
+            provider: eventoapp-authserver-provider
         provider:
-            way2learn-authserver-provider:
+            eventoapp-authserver-provider:
               token-uri: http://localhost:8081/auth/oauth/token
               authorization-uri: http://localhost:8081/auth/oauth/authorize
               user-info-uri: http://localhost:8081/auth/userinfo
               user-name-attribute: username
-

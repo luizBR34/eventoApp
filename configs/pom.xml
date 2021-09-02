@@ -20,7 +20,7 @@
 	<dependencies>
 	<!-- MODULES DENPENDENCY START -->
         <dependency>
-            <groupId>com.eventoApp.services</groupId>
+            <groupId>com.eventoRS.services</groupId>
             <artifactId>services</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -45,11 +45,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
-<!-- 		<dependency>
-		    <groupId>org.springframework.data</groupId>
-		    <artifactId>spring-data-rest-webmvc</artifactId>
-		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

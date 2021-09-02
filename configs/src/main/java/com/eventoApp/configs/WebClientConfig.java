@@ -23,8 +23,8 @@ public class WebClientConfig {
 		oauth2.setDefaultClientRegistrationId("eventoas");
 		return WebClient.builder().apply(oauth2.oauth2Configuration()).build();
 	}
-	
-	
+
+
 	@Bean
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();

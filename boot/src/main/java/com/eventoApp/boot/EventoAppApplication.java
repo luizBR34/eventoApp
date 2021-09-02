@@ -16,8 +16,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
-@EnableFeignClients("com.eventoApp.clients")
-@ComponentScan("com.eventoApp")
+@EnableFeignClients("com.eventoRS.clients")
+@ComponentScan({"com.eventoApp", "com.eventoRS.services"})
 public class EventoAppApplication extends SpringBootServletInitializer {
 
     @Override
