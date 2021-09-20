@@ -31,7 +31,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 			throws IOException, ServletException {
 
 		Map<String, Object> attributes = getAttributesFromAuthenticatedUser(authentication);
-		String userName = attributes.containsKey("username") ? attributes.get("username").toString() : attributes.get("name").toString();
+		String userName = attributes.containsKey("username") ? attributes.get("username").toString() : attributes.get("given_name").toString();
 		String token = attributes.containsKey("tokenValue") ? attributes.get("tokenValue").toString() : "";
 
 		log.info("Username: " + userName);
