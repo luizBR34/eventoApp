@@ -54,13 +54,6 @@ public class EventAppController implements ErrorController {
 	}
 
 
-	@GetMapping(value="/oauth2/authorization/eventoas")
-	public void teste() {
-
-		log.info("EventAppController:mainPage()");
-	}
-
-
 
 	public User getAuthenticatedUser() {
 
