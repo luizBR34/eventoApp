@@ -3,6 +3,7 @@ package com.eventoApp.configs;
 import com.eventoRS.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -34,6 +35,9 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Qualifier("oauth2authSuccessHandler")
 	private AuthenticationSuccessHandler oauth2authSuccessHandler;
 
+	@Value(value = "${EVENTOANGULAR_HOST}")
+	private String eventoAngularHost;
+
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
@@ -54,13 +58,13 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
         	.anyRequest().authenticated()
 		.and()
 			.formLogin()
-				.loginPage("http://localhost:4200/home?login=true")
+				.loginPage(eventoAngularHost + "/home?login=true")
 				.loginProcessingUrl("/logar/**")
 				.successHandler(oauth2authSuccessHandler)
 	
         .and()
 		.oauth2Login()
-			.loginPage("http://localhost:4200/home?login=true")
+			.loginPage(eventoAngularHost + "/home?login=true")
 			.successHandler(oauth2authSuccessHandler)
 
 		.and()

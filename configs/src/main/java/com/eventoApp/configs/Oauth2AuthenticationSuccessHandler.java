@@ -3,6 +3,7 @@ package com.eventoApp.configs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -24,7 +25,10 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 	private Logger log = LoggerFactory.getLogger(Oauth2AuthenticationSuccessHandler.class);
 
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-	
+
+	@Value(value = "${EVENTOANGULAR_HOST}")
+	private String eventoAngularHost;
+
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
@@ -36,7 +40,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
 		log.info("Username: " + userName);
 
-		redirectStrategy.sendRedirect(request, response, "http://localhost:4200/eventos?username=" + userName + "&token=" + token);
+		redirectStrategy.sendRedirect(request, response, eventoAngularHost + "/eventos?username=" + userName + "&token=" + token);
 	}
 	
 	

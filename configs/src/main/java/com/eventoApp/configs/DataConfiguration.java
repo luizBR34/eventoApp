@@ -1,5 +1,6 @@
 package com.eventoApp.configs;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ import java.util.Locale;
 
 @Configuration
 public class DataConfiguration implements WebMvcConfigurer {
+
+	@Value(value = "${EVENTOANGULAR_HOST}")
+	private String eventoAngularHost;
 
 	@Bean
 	public LocaleResolver localeResolver() {
@@ -45,7 +49,7 @@ public class DataConfiguration implements WebMvcConfigurer {
 	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 	    
 	    CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+	    config.setAllowedOrigins(Collections.singletonList(eventoAngularHost));
 		config.setAllowedMethods(Collections.singletonList("*"));
 	    config.setAllowedHeaders(Collections.singletonList("*"));
 		config.setAllowCredentials(true);

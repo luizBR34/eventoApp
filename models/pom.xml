@@ -16,11 +16,7 @@
 
 	<dependencies>
 	<!-- MODULES DENPENDENCY START -->
-        <dependency>
-            <groupId>com.eventoApp.mappers</groupId>
-            <artifactId>mappers</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
 	<!-- MODULES DENPENDENCY END -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

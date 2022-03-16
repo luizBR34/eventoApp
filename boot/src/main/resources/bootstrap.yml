@@ -3,10 +3,9 @@ spring:
     name: eventoapp
   cloud:
     vault:
-      host: localhost
+      host: ${VAULT_HOST}
+      #host: localhost
       port: 8200
       scheme: http
-     # authentication: token
-      token: s.ekROw65aiIrSBPSYr1pZZTGL
-
-         
+      #token: s.MvyZ4i7suJRAzO3tMVCRadPC
+      token: ${VAULT_ROOT_TOKEN}

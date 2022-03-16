@@ -48,13 +48,20 @@ spring:
             client-secret: secret
             client-name: EventoApp
             scope: user_info,read
-            redirect-uri: https://localhost:8443/myapp/login/oauth2/code/eventoas
+            redirect-uri: ${EVENTOAPP_HOST}/myapp/login/oauth2/code/eventoas
+            #redirect-uri: https://localhost:8443/myapp/login/oauth2/code/eventoas
             client-authentication-method: basic
             authorization-grant-type: authorization_code
             provider: eventoapp-authserver-provider
         provider:
-            eventoapp-authserver-provider:
-              token-uri: http://localhost:8081/auth/oauth/token
-              authorization-uri: http://localhost:8081/auth/oauth/authorize
-              user-info-uri: http://localhost:8081/auth/userinfo
-              user-name-attribute: username
+          eventoapp-authserver-provider:
+            token-uri: ${EVENTOAS_HOST}/auth/oauth/token
+            authorization-uri: ${EVENTOAS_HOST}/auth/oauth/authorize
+            user-info-uri: ${EVENTOAS_HOST}/auth/userinfo
+            user-name-attribute: username
+#            eventoapp-authserver-provider:
+#              token-uri: https://localhost:8081/auth/oauth/token
+#              authorization-uri: https://localhost:8081/auth/oauth/authorize
+#              user-info-uri: https://localhost:8081/auth/userinfo
+#              user-name-attribute: username
+

@@ -17,25 +17,11 @@
 	<dependencies>
 	<!-- MODULES DENPENDENCY START -->
         <dependency>
-            <groupId>com.eventoApp.mappers</groupId>
-            <artifactId>mappers</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.eventoApp.configs</groupId>
             <artifactId>configs</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.eventoApp.models</groupId>
-            <artifactId>models</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.eventoRS.services</groupId>
-            <artifactId>services</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
 	<!-- MODULES DENPENDENCY END -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

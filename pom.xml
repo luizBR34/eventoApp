@@ -14,7 +14,6 @@
 		<system.version>0.0.1-SNAPSHOT</system.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -26,15 +25,10 @@
 				<version>2.2.6.RELEASE</version>
 				<scope>import</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>boot</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>clients</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -54,11 +48,6 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>services</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -66,14 +55,24 @@
 		</dependencies>
 	</dependencyManagement>
 	
-<!-- 	<build>
+ 	<build>
 		<finalName>eventoapp</finalName>
 		<plugins>
-			Docker
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!--JIB PLUGIN TO BUILD DOCKER IMAGES ON THE MAVEN BUILD-->
+<!--			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>1.6.1</version>
+				<version>3.2.0</version>
 				<configuration>
 				    <from>
 				        <image>openjdk:alpine</image>
@@ -91,7 +90,7 @@
 				        </jvmFlags>
 				        <mainClass>com.eventoApp.boot.EventoAppApplication</mainClass>
 				        <ports>
-				            <port>8080</port>
+				            <port>8443</port>
 				        </ports>
 					</container>
 				</configuration>
@@ -103,9 +102,45 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>-->
+			<!-- USED TO CREATE FAT JAR FILE TO BE USED WITH DOCKERFILE WITHOUT BUILD - START-->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.6.3</version>
+				<configuration>
+					<mainClass>com.eventoApp.boot.EventoAppApplication</mainClass>
+					<layout>JAR</layout>
+					<executable>false</executable>
+					<layers>
+						<enabled>true</enabled>
+						<!--<configuration>${project.basedir}/layers.xml</configuration>-->
+					</layers>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+			<!-- USED TO CREATE FAT JAR FILE TO BE USED WITH DOCKERFILE WITHOUT BUILD - END-->
 		</plugins>
-	</build> -->
+	</build>
+
+	<!--USED TO CREATE FAT JAR FILE TO BE USED WITH DOCKERFILE WITHOUT BUILD - START-->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<url>https://repo.spring.io/snapshot</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<!-- USED TO CREATE FAT JAR FILE TO BE USED WITH DOCKERFILE WITHOUT BUILD - END-->
 
 	<modules>
 		<module>boot</module>
@@ -114,5 +149,4 @@
 		<module>models</module>
 		<module>web</module>
 	</modules>
-
 </project>

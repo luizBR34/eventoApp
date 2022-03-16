@@ -7,9 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.eventoRS.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
@@ -23,8 +23,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 	@Qualifier("sessionsPersisted")
 	private SessionRegistry session;
 
-	@Autowired
-	private ClientService sr;
+	@Value(value = "${EVENTOANGULAR_HOST}")
+	private String eventoAngularHost;
+
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -33,10 +34,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 		session.getAllSessions(nonNull(authentication) ? authentication.getPrincipal() : new Object() , false)
 				.stream()
 				.forEach(s -> session.removeSessionInformation(s.getSessionId()));
-
-		sr.deleteSession();
 				
-		String URL = "http://localhost:4200/home";
+		String URL = eventoAngularHost + "/home";
 		response.setStatus(HttpStatus.OK.value());
 		response.sendRedirect(URL);
 	}
